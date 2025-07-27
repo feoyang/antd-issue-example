@@ -75,21 +75,18 @@ export const AIChat = ({
 }: AIChatProps) => {
   const abortController = useRef<AbortController>(new AbortController());
   // 使用ref向agent传递id，因为agent初次时被创建已经形成了闭包，不会更新state
-  const currentConversationIdRef = useRef<string | undefined>(undefined);
+  const currentConversationIdStateRef = useRef<ConversationIdState>({
+    id: undefined,
+    fromHistoryConversation: false,
+  });
 
   // ==================== Runtime ====================
   const [agent] = useXAgent<AgentMessage, { messages: AgentMessage[]; message: AgentMessage }, AgentMessage>({
 	  request: async ({ message }, { onSuccess, onUpdate, onStream, onError }) => {
 	    onStream?.(new AbortController());
 	    try {
-
-        // 用来让state的history标记变为false
-        if (currentConversationIdRef.current) {
-          startNewChat(currentConversationIdRef.current);
-        }
-
 	      const res = await requestSendChatMessage({
-	        conversationId: currentConversationIdRef.current,
+	        conversationId: currentConversationIdStateRef.current.id,
 	        query: message.content || '',
 	        signal: abortController.current.signal,
 	      });
@@ -100,6 +97,11 @@ export const AIChat = ({
 	        return;
 	      }
 
+        // 用来让state的history标记变为false
+        if (currentConversationIdStateRef.current.id && currentConversationIdStateRef.current.fromHistoryConversation) {
+          startNewChat(currentConversationIdStateRef.current.id);
+        }
+
 	      let current = '';
 	      for await (const chunk of stream) {
 	        // 跳过例如 ping 的 chunk
@@ -109,8 +111,8 @@ export const AIChat = ({
 	        const res = JSON.parse(chunk.data);
 	        // 设置 currentNewChatConversationIdRef 的值，用于后面的问答传对话id
 	        // 使用ref避免闭包问题，只在当前请求第一次获得conversation_id时调用startNewChat
-	        if (!currentConversationIdRef.current && res.conversation_id) {
-	          currentConversationIdRef.current = res.conversation_id;
+	        if (!currentConversationIdStateRef.current.id && res.conversation_id) {
+	          currentConversationIdStateRef.current.id = res.conversation_id;
 	          startNewChat(res.conversation_id);
 	        }
 	        if (res.event === 'message_end') {
@@ -209,7 +211,7 @@ export const AIChat = ({
         }]);
       }, 100);
     }
-    currentConversationIdRef.current = conversationIdState.id;
+    currentConversationIdStateRef.current = conversationIdState;
   }, [conversationIdState, openingStatement, runFetchHistoryMessage, setMessages]);
 
   const onSubmit = (message: AgentUserMessage) => {
