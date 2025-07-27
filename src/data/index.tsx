@@ -4,6 +4,11 @@ export type {
 } from './common';
 
 export type {
+  BaseFile,
+  BaseFileTemplate,
+} from './base-types';
+
+export type {
   WeatherData,
   Data,
   DataWithDate,
@@ -25,10 +30,6 @@ export type {
 
 export {
   getWeather,
-  getSoilDataText,
-  getAirDataKeyName,
-  getAirDataUnit,
-  getSoilDataUnit,
   getAlarmTypeText,
 } from './tools';
 
@@ -36,4 +37,5 @@ export {
   AIRagMode,
   AIResponseMode,
   AITag,
+  FileFormatType,
 } from './enums';

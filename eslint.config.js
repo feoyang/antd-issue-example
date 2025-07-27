@@ -13,6 +13,8 @@ import stylistic from '@stylistic/eslint-plugin'
 const compat = new FlatCompat();
 
 const ignoreWords = [
+    "Rect",
+    "unobserve",
     "selectable",
     "Dropdown",
     "Cascader",

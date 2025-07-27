@@ -1,1 +1,0 @@
-GIT_PARAMS="$1" npm run commit-check
