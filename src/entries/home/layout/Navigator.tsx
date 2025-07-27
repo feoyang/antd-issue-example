@@ -1,5 +1,5 @@
 import { Flex, Layout, Segmented, Typography } from 'antd';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useUser } from '../../../model/account/hooks';
 import deviceIcon from '../assets/segmented-device.png';
 import controlIcon from '../assets/segmented-control.png';
@@ -10,6 +10,7 @@ import { header } from './style';
 const { Header } = Layout;
 
 export const Navigator = () => {
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const user = useUser();
 
@@ -60,6 +61,7 @@ export const Navigator = () => {
           block
           size="large"
           options={segmentedOptions}
+          defaultValue={pathname.split('/').pop()}
           onChange={(value) => {
             navigate(`/home/${value}`);
           }}

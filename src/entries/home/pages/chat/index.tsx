@@ -6,8 +6,16 @@ import { LeftWrapper, RightWrapper } from '../../layout/style';
 import { AIChat } from './AIChat';
 import { Sider } from './sider';
 
+export interface ConversationIdState {
+  id: string | undefined;
+  fromHistoryConversation: boolean;
+}
+
 export const Chat = () => {
-  const [currentConversationId, setCurrentConversationId] = useState<string | undefined>(undefined);
+  const [currentConversationIdState, setCurrentConversationIdState] = useState<ConversationIdState>({
+    id: undefined,
+    fromHistoryConversation: false,
+  });
 
   const { data: instruction } = useRequest(requestAIParameters, {
     onError: (err) => {
@@ -19,19 +27,28 @@ export const Chat = () => {
     <>
       <LeftWrapper>
         <AIChat
-          conversationId={currentConversationId}
+          conversationIdState={currentConversationIdState}
           openingStatement={instruction?.opening_statement}
-          onChat={(conversationId) => {
-            setCurrentConversationId(conversationId);
+          startNewChat={(conversationId) => {
+            setCurrentConversationIdState({
+              id: conversationId,
+              fromHistoryConversation: false,
+            });
           }}
         />
       </LeftWrapper>
       <RightWrapper>
         <Sider
-          currentConversationId={currentConversationId}
-          setNewChat={() => setCurrentConversationId(undefined)}
+          conversationIdState={currentConversationIdState}
+          setNewChat={() => setCurrentConversationIdState({
+            id: undefined,
+            fromHistoryConversation: false,
+          })}
           selectHistoryChat={(id: string) => {
-            setCurrentConversationId(id);
+            setCurrentConversationIdState({
+              id: id,
+              fromHistoryConversation: true,
+            });
           }}
         />
       </RightWrapper>

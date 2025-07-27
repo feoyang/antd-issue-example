@@ -11,6 +11,7 @@ import {
 } from '../../../../services/requests/ai-chat';
 import { AIQueryInput } from './AIQueryInput';
 import { messagesContainer } from './style';
+import { ConversationIdState } from './index';
 
 const md = markdownit({ html: true, breaks: true });
 
@@ -62,34 +63,38 @@ type ParsedMessage = {
 };
 
 export interface AIChatProps {
-	conversationId: string | undefined;
+	conversationIdState: ConversationIdState;
 	openingStatement: string | undefined;
-	onChat: (currentConversationId: string) => void;
+	startNewChat: (currentConversationId: string) => void;
 }
 
 export const AIChat = ({
-  conversationId,
+  conversationIdState,
   openingStatement,
-  onChat,
+  startNewChat,
 }: AIChatProps) => {
   const abortController = useRef<AbortController>(new AbortController());
-  // ==================== State ====================
-  // 每次发送消息时，都要传这个对话id
-  const currentNewChatConversationIdRef = useRef<string | undefined>(undefined);
+  // 使用ref向agent传递id，因为agent初次时被创建已经形成了闭包，不会更新state
+  const currentConversationIdRef = useRef<string | undefined>(undefined);
 
   // ==================== Runtime ====================
   const [agent] = useXAgent<AgentMessage, { messages: AgentMessage[]; message: AgentMessage }, AgentMessage>({
 	  request: async ({ message }, { onSuccess, onUpdate, onStream, onError }) => {
 	    onStream?.(new AbortController());
 	    try {
+
+        // 用来让state的history标记变为false
+        if (currentConversationIdRef.current) {
+          startNewChat(currentConversationIdRef.current);
+        }
+
 	      const res = await requestSendChatMessage({
-	        conversationId: currentNewChatConversationIdRef.current,
+	        conversationId: currentConversationIdRef.current,
 	        query: message.content || '',
 	        signal: abortController.current.signal,
 	      });
 	      // eslint-disable-next-line new-cap
 	      const stream = res.body ? XStream({ readableStream: res.body }) : null;
-
 	      if (!stream) {
 	        onError(new Error('Stream is null'));
 	        return;
@@ -101,13 +106,12 @@ export const AIChat = ({
 	        if (!chunk.data) {
 	          continue;
 	        }
-
 	        const res = JSON.parse(chunk.data);
 	        // 设置 currentNewChatConversationIdRef 的值，用于后面的问答传对话id
-	        if (!currentNewChatConversationIdRef.current) {
-	          onChat(res.conversation_id);
-	          // 不能用 useState，这里是闭包，
-	          currentNewChatConversationIdRef.current = res.conversation_id;
+	        // 使用ref避免闭包问题，只在当前请求第一次获得conversation_id时调用startNewChat
+	        if (!currentConversationIdRef.current && res.conversation_id) {
+	          currentConversationIdRef.current = res.conversation_id;
+	          startNewChat(res.conversation_id);
 	        }
 	        if (res.event === 'message_end') {
 	          onSuccess([{ type: 'ai', content: current }]);
@@ -186,16 +190,15 @@ export const AIChat = ({
   });
 
   useEffect(() => {
-    // 如果 header 的 conversationId 从 undefined 到有值
-    if (conversationId) {
-      // 用户当前会话已经是新对话，不需要进行操作
-      if (conversationId === currentNewChatConversationIdRef.current) {
-        return;
+    // 如果 conversationId 从 undefined 到有值
+    if (conversationIdState.id) {
+      // 用户当前会话是新对话，不需要获取历史消息
+      if (conversationIdState.fromHistoryConversation) {
+        // 用户从header中选择了一个别的对话，则获取历史消息
+        runFetchHistoryMessage(conversationIdState.id);
       }
-      // 用户从header中选择了一个别的对话，则获取历史消息
-      runFetchHistoryMessage(conversationId);
     } else {
-      // 如果 header 的 conversationId 从有值到 undefined,说明点击了新建对话
+      // 如果conversationId 从有值到 undefined,说明点击了新建对话
       abortController.current?.abort();
       // 这里需要设置一个延时，否则会报错（abort的原因，这里是官方做法）
       setTimeout(() => {
@@ -206,9 +209,8 @@ export const AIChat = ({
         }]);
       }, 100);
     }
-    // 我们只在当前打开了的对话之后的第一次对话才更新currentNewChatConversationIdRef，始终根据返回的第一次回答的conversation_id来更新
-    currentNewChatConversationIdRef.current = undefined;
-  }, [conversationId, openingStatement, runFetchHistoryMessage, setMessages]);
+    currentConversationIdRef.current = conversationIdState.id;
+  }, [conversationIdState, openingStatement, runFetchHistoryMessage, setMessages]);
 
   const onSubmit = (message: AgentUserMessage) => {
     if (!message) {

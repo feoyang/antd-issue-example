@@ -1,10 +1,12 @@
-import { PlusOutlined, CommentOutlined } from '@ant-design/icons';
+import { PlusOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Conversations } from '@ant-design/x';
-import { Button, Flex, message, Popover, Spin } from 'antd';
+import { Button, Empty, Flex, message, Popover, Space, Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { requestHistoryChat } from '../../../../../services/requests/ai-chat';
+import { historyChatContainer } from '../style';
+import { ConversationIdState } from '..';
 
 // 添加时间分组函数
 const getTimeGroup = (timestamp: number) => {
@@ -31,68 +33,68 @@ const getTimeGroup = (timestamp: number) => {
 };
 
 export interface AISiderProps {
-  currentConversationId: string | undefined;
+  conversationIdState: ConversationIdState;
   setNewChat: () => void;
   selectHistoryChat: (id: string) => void;
 }
 
 export const Sider = ({
   setNewChat,
-  currentConversationId,
+  conversationIdState,
   selectHistoryChat,
 }: AISiderProps) => {
-
   const { data: conversations, loading, refresh } = useRequest(requestHistoryChat, {
     onError(err) {
       message.error(err.message);
     },
   });
 
-  // 如果currentConversationId变化，则用户选择了某个历史对话或者开始新的聊天，需要刷新历史对话列表
+  // 如果currentConversationId变化，且不是点击历史对话操作，
+  // 则用户开始了新的聊天，需要刷新历史对话列表
   useEffect(() => {
-    if (currentConversationId) {
+    if (conversationIdState.id && !conversationIdState.fromHistoryConversation) {
       refresh();
     }
-  }, [currentConversationId, refresh]);
+  }, [conversationIdState, refresh]);
 
   return (
-    <>
+    <Flex vertical gap="small" style={{ height: '100%', minHeight: 0 }}>
       <Flex justify="space-between" align="center">
-        <Button
-          type="text"
-          icon={<PlusOutlined />}
-          onClick={setNewChat}
-        />
-        <Popover
-          placement="bottom"
-          styles={{
-            body: {
-              padding: 0,
-              maxHeight: 600,
-              width: 300,
-              overflowY: 'auto',
-            },
-          }}
-          content={
-            <Spin spinning={loading}>
+        <Popover content="新建对话">
+          <Button
+            type="text"
+            icon={<PlusOutlined />}
+            onClick={setNewChat}
+          />
+        </Popover>
+        <Space>
+          <HistoryOutlined />
+          历史记录
+        </Space>
+      </Flex>
+      <Flex className={historyChatContainer} align="center" justify="center">
+        <Spin spinning={loading} wrapperClassName="historyChatsWrapper">
+          {
+            conversations?.data?.length ?
               <Conversations
+                className="conversation-list"
                 items={conversations?.data.map((conversation) => ({
                   key: conversation.id,
                   label: conversation.name,
                   timestamp: conversation.updated_at,
                   group: getTimeGroup(conversation.updated_at),
                 }))}
-                activeKey={currentConversationId}
+                activeKey={conversationIdState.id}
                 groupable
-                onActiveChange={selectHistoryChat}
+                onActiveChange={(id) => {
+                  selectHistoryChat(id);
+                }}
               />
-            </Spin>
+              :
+              <Empty description="暂无历史记录" />
           }
-        >
-          <Button type="text" icon={<CommentOutlined />} />
-        </Popover>
+        </Spin>
       </Flex>
-
-    </>
+    </Flex>
   );
 };

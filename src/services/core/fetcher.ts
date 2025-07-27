@@ -11,15 +11,16 @@ export type ResponseOnRejected = ResponseInterceptor[1];
 
 const httpRequestInterceptorFactory = () => {
   const onFulfilled: RequestOnFulfilled = (config) => {
-    const { headers } = config;
+    const { headers, url } = config;
 
+    const startUrl = url?.split('/')[0];
     const token = getToken();
 
     return {
       ...config,
       headers: {
         ...headers,
-        ...token ? { 'token': token } : {},
+        ...token && startUrl === 'api' && url && { 'token': token },
       },
     } as InternalAxiosRequestConfig;
   };

@@ -14,9 +14,10 @@ import { transformResponse } from '../tools/transform-response';
 
 export const BASE_URL = 'https://agrox.horai.cn/v1';
 export const AUTH_TOKEN = 'Bearer app-V50ON92WuGVVZHDlUmpEFkJR';
+export const DEFAULT_USER = 'test2';
 
 export const requestHistoryChat = async (
-  user = 'agrox-pro-front',
+  user = DEFAULT_USER,
   limit = 20,
   tag = null,
   lastId = null,
@@ -44,7 +45,7 @@ export const requestHistoryChat = async (
 
 export const requestHistoryMessage = async (
   conversationId: string,
-  user = 'agrox-pro-front',
+  user = DEFAULT_USER,
   firstId = null,
   limit = 20,
 ) => {
@@ -104,7 +105,7 @@ export interface RequestChatRequestParams {
 }
 
 export const requestSendChatMessage = async ({
-  user = 'agrox-pro-front',
+  user = DEFAULT_USER,
   conversationId,
   query,
   tag = AITag.CHAT,
@@ -128,12 +129,19 @@ export const requestSendChatMessage = async ({
     response_mode: responseMode,
   };
 
-  const res = await request.post(url, body, {
+  // 直接使用fetch而不是axios来获取ReadableStream
+  const response = await fetch(url, {
+    method: 'POST',
     headers,
-    ...signal && { signal },
+    body: JSON.stringify(body),
+    signal,
   });
 
-  return transformResponse<Response>(res);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response;
 };
 
 export const requestAIParameters = async () => {
