@@ -1,55 +1,36 @@
-import { useRequest } from 'ahooks';
-import { message } from 'antd';
 import { useState } from 'react';
-import { requestAIParameters } from '../../../../services/requests/ai-chat';
+import { flushSync } from 'react-dom';
 import { LeftWrapper, RightWrapper } from '../../layout/style';
 import { AIChat } from './AIChat';
 import { Sider } from './sider';
 
-export interface ConversationIdState {
-  id: string | undefined;
-  fromHistoryConversation: boolean;
-}
-
 export const Chat = () => {
-  const [currentConversationIdState, setCurrentConversationIdState] = useState<ConversationIdState>({
-    id: undefined,
-    fromHistoryConversation: false,
-  });
-
-  const { data: instruction } = useRequest(requestAIParameters, {
-    onError: (err) => {
-      message.error(err.message);
-    },
-  });
+  const [currentConversationId, setCurrentConversationId] = useState<string | undefined>(undefined);
+  const [shouldRefreshConversationList, setShouldRefreshConversationList] = useState(0);
 
   return (
     <>
       <LeftWrapper>
         <AIChat
-          conversationIdState={currentConversationIdState}
-          openingStatement={instruction?.opening_statement}
-          startNewChat={(conversationId) => {
-            setCurrentConversationIdState({
-              id: conversationId,
-              fromHistoryConversation: false,
-            });
+          currentConversationId={currentConversationId}
+          onStartAnswer={(id: string) => {
+            if (currentConversationId !== id) {
+              // 先同步更新 currentConversationId
+              flushSync(() => {
+                setCurrentConversationId(id);
+              });
+            }
+            // 点开一个历史对话，继续对话，则需要刷新列表，或者新对话开始也要刷新列表。
+            setShouldRefreshConversationList(prev => prev + 1);
           }}
         />
       </LeftWrapper>
       <RightWrapper>
         <Sider
-          conversationIdState={currentConversationIdState}
-          setNewChat={() => setCurrentConversationIdState({
-            id: undefined,
-            fromHistoryConversation: false,
-          })}
-          selectHistoryChat={(id: string) => {
-            setCurrentConversationIdState({
-              id: id,
-              fromHistoryConversation: true,
-            });
-          }}
+          currentConversationId={currentConversationId}
+          shouldRefreshConversationList={shouldRefreshConversationList}
+          onStartNewChat={() => setCurrentConversationId(undefined)}
+          onSelectHistoryChat={(id: string) => setCurrentConversationId(id)}
         />
       </RightWrapper>
     </>

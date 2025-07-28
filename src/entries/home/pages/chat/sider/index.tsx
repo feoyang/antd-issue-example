@@ -2,10 +2,9 @@ import { PlusOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Conversations } from '@ant-design/x';
 import { Button, Empty, Flex, message, Popover, Space, Spin } from 'antd';
 import dayjs from 'dayjs';
-import { useRequest } from 'ahooks';
+import { useMemoizedFn, useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { requestHistoryChat } from '../../../../../services/requests/ai-chat';
-import { ConversationIdState } from '..';
 import { useSiderStyle } from '../style';
 
 // 添加时间分组函数
@@ -33,15 +32,17 @@ const getTimeGroup = (timestamp: number) => {
 };
 
 export interface AISiderProps {
-  conversationIdState: ConversationIdState;
-  setNewChat: () => void;
-  selectHistoryChat: (id: string) => void;
+  currentConversationId: string | undefined;
+  shouldRefreshConversationList: number;
+  onStartNewChat: () => void;
+  onSelectHistoryChat: (id: string) => void;
 }
 
 export const Sider = ({
-  setNewChat,
-  conversationIdState,
-  selectHistoryChat,
+  onStartNewChat,
+  currentConversationId,
+  shouldRefreshConversationList,
+  onSelectHistoryChat,
 }: AISiderProps) => {
   const { styles } = useSiderStyle();
 
@@ -51,13 +52,16 @@ export const Sider = ({
     },
   });
 
-  // 如果currentConversationId变化，且不是点击历史对话操作，
-  // 则用户开始了新的聊天，需要刷新历史对话列表
-  useEffect(() => {
-    if (conversationIdState.id && !conversationIdState.fromHistoryConversation) {
+  const checkShouldRefreshConversationList = useMemoizedFn(() => {
+    if (currentConversationId !== conversations?.data[0].id) {
       refresh();
     }
-  }, [conversationIdState, refresh]);
+  });
+
+  useEffect(() => {
+    checkShouldRefreshConversationList();
+  }, [shouldRefreshConversationList, checkShouldRefreshConversationList]);
+
 
   return (
     <>
@@ -66,7 +70,7 @@ export const Sider = ({
           <Button
             type="text"
             icon={<PlusOutlined />}
-            onClick={setNewChat}
+            onClick={onStartNewChat}
           />
         </Popover>
         <Space>
@@ -86,11 +90,9 @@ export const Sider = ({
                   timestamp: conversation.updated_at,
                   group: getTimeGroup(conversation.updated_at),
                 }))}
-                activeKey={conversationIdState.id}
+                activeKey={currentConversationId}
                 groupable
-                onActiveChange={(id) => {
-                  selectHistoryChat(id);
-                }}
+                onActiveChange={onSelectHistoryChat}
               />
               :
               <Empty description="暂无历史记录" />

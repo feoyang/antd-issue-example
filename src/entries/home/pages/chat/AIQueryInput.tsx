@@ -1,7 +1,6 @@
 import { Sender, Suggestion } from '@ant-design/x';
 import { GetProp, Tooltip } from 'antd';
 import React from 'react';
-import { AISendChatMessageResponseData } from '../../../../data';
 
 type SuggestionItems = Exclude<GetProp<typeof Suggestion, 'items'>, () => void>;
 
@@ -10,7 +9,6 @@ const inputSuggestions: SuggestionItems = [
 ];
 
 export interface AIQueryInputProps {
-	onReceiveAnswer?: (res: AISendChatMessageResponseData) => void;
 	onSendMessage?: (query: string) => void;
 	onCancel?: () => void;
 	loading?: boolean;
