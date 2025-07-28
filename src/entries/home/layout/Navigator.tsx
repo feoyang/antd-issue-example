@@ -53,7 +53,7 @@ export const Navigator = () => {
     <Header className={header}>
       <Flex align="center" gap="large" style={{ width: '100%' }}>
         <Flex vertical align="start">
-          <Typography.Title level={4} style={{ margin: 0 }}>Hello，{user?.name}</Typography.Title>
+          <Typography.Title level={4} style={{ margin: 0 }}>Hello，{user?.nickname}</Typography.Title>
           <Typography.Text type="secondary">欢迎来到智慧农业系统！</Typography.Text>
         </Flex>
         <Segmented

@@ -1,5 +1,5 @@
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { getToken } from '../../authorization/token';
+import { clearToken, getToken, setToken } from '../../authorization/token';
 import type { IHttpInstance, RequestInterceptor, ResponseInterceptor } from './tools';
 import { baseHttpFactory } from './tools';
 
@@ -13,14 +13,13 @@ const httpRequestInterceptorFactory = () => {
   const onFulfilled: RequestOnFulfilled = (config) => {
     const { headers, url } = config;
 
-    const startUrl = url?.split('/')[0];
     const token = getToken();
 
     return {
       ...config,
       headers: {
         ...headers,
-        ...token && startUrl === 'api' && url && { 'token': token },
+        ...token && url?.includes('/api/v1') && { 'Authorization': token },
       },
     } as InternalAxiosRequestConfig;
   };
@@ -30,10 +29,17 @@ const httpRequestInterceptorFactory = () => {
 
 const httpResponseInterceptorFactory = () => {
   const onFulfilled: ResponseOnFulfilled = (res) => {
+    const token = res.headers['authorization'];
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    token && setToken(token);
     return res;
   };
 
   const onRejected: ResponseOnRejected = (res: AxiosError) => {
+    if (res.response?.status === 401) {
+      clearToken();
+      location.href = '/account/login';
+    }
     return Promise.resolve(res.response);
   };
 

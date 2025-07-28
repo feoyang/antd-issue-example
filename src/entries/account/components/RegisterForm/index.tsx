@@ -1,7 +1,9 @@
-import { Button, Form, Input, Typography } from 'antd';
+import { Button, Form, Input, message, Typography } from 'antd';
 import { useNavigate } from 'react-router';
 import { LockOutlined, PhoneOutlined } from '@ant-design/icons';
+import { useRequest } from 'ahooks';
 import { EntranceFormHeader, EntranceFormWrapper } from '../form-styles';
+import { requestRegisterByUsername } from '../../../../services/requests/account';
 
 export interface RegisterFormDataType {
   account: string;
@@ -11,12 +13,27 @@ export interface RegisterFormDataType {
 export const RegisterForm = () => {
   const navigate = useNavigate();
 
+  const { loading, run: register } = useRequest(requestRegisterByUsername, {
+    manual: true,
+    onSuccess: (res) => {
+      navigate(`/login?phone=${res}`);
+    },
+    onError: (error) => {
+      message.error(error.message);
+    },
+  });
+
+  const handleFinish = (value: RegisterFormDataType) => {
+    register(value.account, value.password);
+  };
+
   return (
     <EntranceFormWrapper>
       <EntranceFormHeader>用户注册</EntranceFormHeader>
       <Form<RegisterFormDataType>
         size="large"
         style={{ width: '100%' }}
+        onFinish={handleFinish}
       >
         <Form.Item
           name="account"
@@ -46,6 +63,14 @@ export const RegisterForm = () => {
               type: 'string',
               whitespace: true,
             },
+            {
+              min: 6,
+              message: '密码长度不能小于6位',
+            },
+            {
+              max: 16,
+              message: '密码长度不能大于16位',
+            },
           ]}
         >
           <Input.Password placeholder="请输入密码" prefix={<LockOutlined />} />
@@ -60,11 +85,32 @@ export const RegisterForm = () => {
               type: 'string',
               whitespace: true,
             },
+            {
+              min: 6,
+              message: '密码长度不能小于6位',
+            },
+            {
+              max: 16,
+              message: '密码长度不能大于16位',
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('两次输入的密码不一致'));
+              },
+            }),
           ]}
         >
           <Input.Password placeholder="请再次输入密码" prefix={<LockOutlined />} />
         </Form.Item>
-        <Button type="primary" htmlType="submit" block>
+        <Button
+          type="primary"
+          htmlType="submit"
+          block
+          loading={loading}
+        >
           注册
         </Button>
       </Form>

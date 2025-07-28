@@ -1,6 +1,6 @@
 import { safeStorage } from '../common/safe-storage';
 
-const TOKEN_KEY = 'contryside-token';
+const TOKEN_KEY = 'country-token';
 
 export function getToken() {
   return safeStorage.getItem(TOKEN_KEY);

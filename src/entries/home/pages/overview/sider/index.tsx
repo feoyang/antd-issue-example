@@ -3,9 +3,10 @@ import { Card, Col, Flex, Row, Typography } from 'antd';
 import rightPng from '../../../assets/overview-right.png';
 import { BoxContainer } from '../../../components/BoxContainer';
 import warningPng from '../../../assets/overview-warning.png';
-import { topImg, warningBox, weatherBox } from '../style';
+import { overviewSiderStyle } from '../style';
 
 export const Sider = () => {
+  const { styles } = overviewSiderStyle();
 
   const topData = [
     {
@@ -27,7 +28,7 @@ export const Sider = () => {
 
   return (
     <>
-      <Flex className={topImg} gap="middle">
+      <Flex className={styles.topImg} gap="middle">
         <img className="img" src={rightPng} alt="right" />
         <Flex
           className="content"
@@ -60,9 +61,9 @@ export const Sider = () => {
           </Flex>
         </Flex>
       </Flex>
-      <BoxContainer title="气象观测站" extra={dayjs().format('YYYY-MM-DD HH:mm:ss')} className={weatherBox}>
+      <BoxContainer title="气象观测站" extra={dayjs().format('YYYY-MM-DD HH:mm:ss')} className={styles.weatherBox}>
         <Flex vertical gap="middle" className="weatherBoxContent">
-          <Flex className={warningBox} gap="middle" align="center">
+          <Flex className={styles.warningBox} gap="middle" align="center">
             <img className="img" src={warningPng} alt="warning" />
             <Flex vertical>
               <div className="title">

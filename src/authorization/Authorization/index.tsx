@@ -15,7 +15,7 @@ export function Authorization({ children }: AuthorizationProps) {
   const token = getToken();
   const location = useLocation();
   const redirectPath = location.pathname + location.search;
-  const toPathname = `/login?${qs.stringify({ redirect: encodeURIComponent(redirectPath) })}`;
+  const toPathname = `/account/login?${qs.stringify({ redirect: encodeURIComponent(redirectPath) })}`;
 
   if (!token) {
     return <Navigate to={toPathname} />;

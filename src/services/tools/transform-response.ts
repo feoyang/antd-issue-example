@@ -24,7 +24,7 @@ export const transformIResponse = <T = any> (axiosResponse: AxiosResponse<IRespo
     const res = axiosResponse.data;
     const err = axiosResponse as unknown as Error;
 
-    if (res?.code === 200) {
+    if (res?.success) {
       return res?.data || {} as any;
     }
 

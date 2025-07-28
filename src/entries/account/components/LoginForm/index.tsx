@@ -1,9 +1,10 @@
-import { Button, Form, Input, Typography } from 'antd';
-import { useNavigate } from 'react-router';
+import { Button, Form, Input, message, Typography } from 'antd';
+import { useNavigate, useSearchParams } from 'react-router';
 import { LockOutlined, PhoneOutlined } from '@ant-design/icons';
+import { useRequest } from 'ahooks';
 import { EntranceFormHeader, EntranceFormWrapper } from '../form-styles';
-import { setToken } from '../../../../authorization/token';
 import { useSetUser } from '../../../../model/account/hooks';
+import { requestLoginByPhoneOrUserName } from '../../../../services/requests/account';
 
 export interface LoginFormDataType {
   account: string;
@@ -11,16 +12,24 @@ export interface LoginFormDataType {
 }
 
 export const LoginForm = () => {
+  const [searchParams] = useSearchParams();
+  const phone = searchParams.get('phone');
   const navigate = useNavigate();
   const setUser = useSetUser();
 
-  const handleSubmit = () => {
-    setToken('1234567890');
-    setUser({
-      id: '123456789',
-      name: '张三',
-    });
-    navigate('/home');
+  const { loading, run: login } = useRequest(requestLoginByPhoneOrUserName, {
+    manual: true,
+    onSuccess: (res) => {
+      setUser(res);
+      navigate('/home');
+    },
+    onError: (error) => {
+      message.error(error.message);
+    },
+  });
+
+  const handleFinish = (values: LoginFormDataType) => {
+    login(values.account, values.password);
   };
 
   return (
@@ -29,6 +38,10 @@ export const LoginForm = () => {
       <Form<LoginFormDataType>
         size="large"
         style={{ width: '100%' }}
+        onFinish={handleFinish}
+        initialValues={{
+          account: phone || '',
+        }}
       >
         <Form.Item
           name="account"
@@ -58,18 +71,28 @@ export const LoginForm = () => {
               type: 'string',
               whitespace: true,
             },
+            {
+              min: 6,
+              message: '密码长度不能小于6位',
+            },
+            {
+              max: 16,
+              message: '密码长度不能大于16位',
+            },
           ]}
         >
           <Input.Password placeholder="请输入密码" prefix={<LockOutlined />} />
         </Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          block
-          onClick={handleSubmit}
-        >
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            loading={loading}
+          >
           登录
-        </Button>
+          </Button>
+        </Form.Item>
       </Form>
       <div>
         <Typography.Text type="secondary">没有账号？</Typography.Text>

@@ -7,7 +7,6 @@
     "reinstall": "rm -rf node_modules && pnpm install",
     "dev": "vite --mode development",
     "dev:prod": "vite --mode production",
-    "pre": "vite --mode preannouncement",
     "prod": "vite --mode production",
     "build": "tsc && vite build --mode production",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",

@@ -1,5 +1,5 @@
 import { Sender, Suggestion } from '@ant-design/x';
-import { GetProp, Tooltip } from 'antd';
+import { GetProp, Space, Tooltip } from 'antd';
 import React from 'react';
 
 type SuggestionItems = Exclude<GetProp<typeof Suggestion, 'items'>, () => void>;
@@ -51,19 +51,23 @@ export const AIQueryInput = ({
             onCancel={onCancel}
             placeholder="输入 / 获取指令集"
             actions={(_, info) => {
-              const { SendButton, LoadingButton } = info.components;
-              if (loading) {
-                return (
-                  <Tooltip title="停止生成">
-                    <LoadingButton color="default" />
-                  </Tooltip>
-                );
-              }
+              const { SendButton, LoadingButton, SpeechButton } = info.components;
               return (
-                <Tooltip title={!query && '请输入文字'}>
-                  <SendButton />
-                </Tooltip>
+                <Space>
+                  <SpeechButton />
+                  {
+                    loading ?
+                      <Tooltip title="停止生成">
+                        <LoadingButton color="default" />
+                      </Tooltip>
+                      :
+                      <Tooltip title={!query && '请输入文字'}>
+                        <SendButton />
+                      </Tooltip>
+                  }
+                </Space>
               );
+
             }}
           />
         );

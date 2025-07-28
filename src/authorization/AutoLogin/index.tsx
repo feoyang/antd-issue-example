@@ -26,9 +26,10 @@ export const AutoLogin = ({ children }: { children: ReactNode }) => {
     ready: !!token,
   });
 
-  if (loading) {
-    return <Spin tip="登录中..." />;
-  }
-
-  return <>{children}</>;
+  return (
+    <>
+      <Spin tip="登录中..." fullscreen spinning={loading} />
+      {children}
+    </>
+  );
 };
