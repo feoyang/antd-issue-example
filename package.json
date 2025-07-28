@@ -32,6 +32,7 @@
     "ahooks": "^3.9.0",
     "amfe-flexible": "^2.2.1",
     "antd": "^5.26.6",
+    "antd-style": "^3.7.1",
     "axios": "^1.11.0",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",

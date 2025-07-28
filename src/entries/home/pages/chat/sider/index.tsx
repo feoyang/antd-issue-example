@@ -5,8 +5,8 @@ import dayjs from 'dayjs';
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { requestHistoryChat } from '../../../../../services/requests/ai-chat';
-import { historyChatContainer } from '../style';
 import { ConversationIdState } from '..';
+import { useSiderStyle } from '../style';
 
 // 添加时间分组函数
 const getTimeGroup = (timestamp: number) => {
@@ -43,6 +43,8 @@ export const Sider = ({
   conversationIdState,
   selectHistoryChat,
 }: AISiderProps) => {
+  const { styles } = useSiderStyle();
+
   const { data: conversations, loading, refresh } = useRequest(requestHistoryChat, {
     onError(err) {
       message.error(err.message);
@@ -58,7 +60,7 @@ export const Sider = ({
   }, [conversationIdState, refresh]);
 
   return (
-    <Flex vertical gap="small" style={{ height: '100%', minHeight: 0 }}>
+    <>
       <Flex justify="space-between" align="center">
         <Popover content="新建对话">
           <Button
@@ -72,12 +74,12 @@ export const Sider = ({
           历史记录
         </Space>
       </Flex>
-      <Flex className={historyChatContainer} align="center" justify="center">
-        <Spin spinning={loading} wrapperClassName="historyChatsWrapper">
+      <Flex className={styles.historyChatContainer} align="center" justify="center">
+        <Spin spinning={loading} wrapperClassName={styles.historyChatWrapper}>
           {
             conversations?.data?.length ?
               <Conversations
-                className="conversation-list"
+                className={styles.conversationList}
                 items={conversations?.data.map((conversation) => ({
                   key: conversation.id,
                   label: conversation.name,
@@ -95,6 +97,6 @@ export const Sider = ({
           }
         </Spin>
       </Flex>
-    </Flex>
+    </>
   );
 };
