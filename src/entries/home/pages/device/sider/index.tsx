@@ -1,12 +1,14 @@
 import { Flex, Typography } from 'antd';
-import rightPng1 from '../../assets/device-right.png';
-import rightPng2 from '../../assets/device-right2.png';
-import { topImg } from './style';
+import rightPng1 from '../../../assets/device-right.png';
+import rightPng2 from '../../../assets/device-right2.png';
+import { deviceSiderStyle } from '../style';
 
 export const Sider = () => {
+  const { styles } = deviceSiderStyle();
+
   return (
     <>
-      <div className={topImg}>
+      <div className={styles.topImg}>
         <img src={rightPng1} alt="right" className="rightImg1" />
         <Flex align="center" gap="small" className="cover">
           <img src={rightPng2} alt="right" className="rightImg2" />

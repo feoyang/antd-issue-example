@@ -44,7 +44,7 @@ export const overviewStyle = createStyles(({ css }) => {
 
         .reportItem {
           flex: 1;
-          padding: 0px 27px ;
+          padding: 0px 22px ;
           border-radius: 15px;
 
           .title {
@@ -53,7 +53,7 @@ export const overviewStyle = createStyles(({ css }) => {
           }
 
           .img {
-            width: 81px;
+            width: 76px;
           }
         }
       }

@@ -1,11 +1,10 @@
-import { Button, Card, Col, Dropdown, Flex, MenuProps, Row, Space, theme, Typography } from 'antd';
+import { Button, Card, Col, Dropdown, Flex, MenuProps, Row, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { DownOutlined, PlusOutlined, ScanOutlined } from '@ant-design/icons';
-import { px2rem } from '../../../../utils/px-to-rem';
 import { LeftWrapper, RightWrapper } from '../../layout/style';
 import { BoxContainer } from '../../components/BoxContainer';
-import { topContainer } from './style';
-import { Sider } from './Sider';
+import { Sider } from './sider';
+import { deviceStyle } from './style';
 
 const { Text } = Typography;
 
@@ -21,7 +20,7 @@ const items: MenuProps['items'] = [
 ];
 
 export const Device = () => {
-  const { token } = theme.useToken();
+  const { styles } = deviceStyle();
   const [project, setProject] = useState<string>('');
 
   const handleMenuClick: MenuProps['onClick'] = (info) => {
@@ -47,7 +46,7 @@ export const Device = () => {
   return (
     <>
       <LeftWrapper>
-        <Flex justify="space-between" align="center" className={topContainer}>
+        <Flex justify="space-between" align="center" className={styles.topContainer}>
           <Flex align="center">
             <Dropdown menu={menuProps} trigger={['click']}>
               <Button>
@@ -57,15 +56,7 @@ export const Device = () => {
                 </Space>
               </Button>
             </Dropdown>
-            <Text
-              className="text-container"
-              style={{
-                height: px2rem(token.controlHeight),
-                borderRadius: px2rem(token.borderRadius),
-              }}
-            >
-              {project}
-            </Text>
+            <Text className="text-container">{project}</Text>
           </Flex>
           <Space>
             <Button icon={<PlusOutlined />}>增加新设备</Button>
