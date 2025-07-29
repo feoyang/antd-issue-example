@@ -1,0 +1,138 @@
+# CNB 云原生构建配置文件
+# 项目: agrox-contryside-front
+# 描述: React + Vite 前端项目的云原生构建配置
+
+# 开发分支构建配置（完整构建和推送）
+develop:
+  push:
+    - name: frontend-build-and-deploy
+      # 构建环境配置
+      docker:
+        image: node:20-alpine
+        volumes:
+          - /root/.pnpm-store:copy-on-write  # pnpm缓存
+          - /root/.npm:copy-on-write         # npm缓存
+      
+      # Git配置
+      git:
+        enable: true
+        lfs: false
+        submodules: false
+      
+      # 环境变量
+      env:
+        # Node.js环境
+        NODE_ENV: production
+        # pnpm配置
+        PNPM_HOME: /usr/local/bin
+        # Docker镜像标签
+        IMAGE_TAG: ${CNB_COMMIT_SHA_SHORT}
+        IMAGE_NAME: agrox-contryside-front
+        # 制品库配置 (需要在CNB平台配置这些环境变量)
+        DOCKER_REGISTRY: docker.cnb.cool
+        DOCKER_USERNAME: $CNB_TOKEN_USER_NAME
+        DOCKER_PASSWORD: $CNB_TOKEN
+      
+      # 构建阶段
+      stages:
+        # 第一阶段：环境准备和依赖安装
+        - name: prepare-and-install
+          jobs:
+            - name: setup-pnpm
+              script:
+                - echo "=== 安装 pnpm ==="
+                - npm install -g pnpm@latest
+                - pnpm config set store-dir /root/.pnpm-store
+                - pnpm --version
+                - node --version
+                - npm --version
+            
+            - name: install-dependencies
+              script:
+                - echo "=== 安装项目依赖 ==="
+                - pnpm install --frozen-lockfile
+                - echo "依赖安装完成"
+        
+        # 第二阶段：代码检查和构建
+        - name: build-and-test
+          jobs:
+            - name: lint-check
+              script:
+                - echo "=== 代码质量检查 ==="
+                - pnpm run typecheck
+                - pnpm run lint
+              allowFailure: false
+            
+            - name: build-project
+              script:
+                - echo "=== 构建项目 ==="
+                - pnpm run build
+                - echo "构建完成，检查构建产物..."
+                - ls -la dist/
+                - du -sh dist/
+              timeout: 600s  # 10分钟超时
+        
+        # 第三阶段：Docker镜像构建和推送
+        - name: docker-build-push
+          jobs:
+            - name: build-docker-image
+              image: docker:latest
+              script:
+                - echo "=== 构建 Docker 镜像 ==="
+                - docker --version
+                - echo "构建镜像: $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
+                - docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
+                - docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:latest .
+                - echo "镜像构建完成"
+              
+            - name: push-docker-image
+              image: docker:latest
+              script:
+                - echo "=== 推送 Docker 镜像到制品库 ==="
+                - echo $DOCKER_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME --password-stdin
+                - docker push $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+                - docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
+                - echo "镜像推送完成"
+                - echo "镜像地址: $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
+      
+      # 失败时执行的阶段
+      failStages:
+        - name: cleanup-on-failure
+          jobs:
+            - name: cleanup
+              script:
+                - echo "=== 构建失败，清理资源 ==="
+                - docker image prune -f || true
+                - echo "清理完成"
+      
+      # 结束时执行的阶段
+      endStages:
+        - name: final-cleanup
+          jobs:
+            - name: cleanup-images
+              script:
+                - echo "=== 清理本地镜像 ==="
+                - docker image prune -f || true
+                - echo "构建流程结束"
+
+# PR构建配置
+pull_request:
+  - name: pr-build-check
+    docker:
+      image: node:20-alpine
+      volumes:
+        - /root/.pnpm-store:copy-on-write
+    
+    stages:
+      - name: pr-validation
+        jobs:
+          - name: build-and-lint
+            script:
+              - echo "=== PR 构建检查 ==="
+              - npm install -g pnpm@latest
+              - pnpm install --frozen-lockfile
+              - pnpm run typecheck
+              - pnpm run lint
+              - pnpm run build
+              - echo "PR 检查通过"
+            timeout: 300s
