@@ -1,9 +1,58 @@
-import { Flex, Typography, Modal, List, message, Input, Table } from 'antd';
+import { Flex, Typography, Modal, List, message, Input, Table, TableProps, Space, Tag } from 'antd';
 import { useRequest } from 'ahooks';
 import classNames from 'classnames';
 import { useState } from 'react';
 import { createMissionModalStyle } from '../style';
-import { requestGatewayListByPage, requestProgramListByGatewayId } from '../../../../../services/requests/xlyk-device';
+import {
+  requestGatewayListByPage,
+  requestProgramListByGatewayId,
+  RequestProgramListByGatewayIdData,
+} from '../../../../../services/requests/xlyk-device';
+
+const columns: TableProps<RequestProgramListByGatewayIdData>['columns'] = [
+  {
+    title: '名称',
+    dataIndex: 'programName',
+    key: 'programName',
+  },
+  {
+    title: '同步状态',
+    dataIndex: 'syncFlag',
+    key: 'syncFlag',
+    render: (flag: number) => (
+      <Tag color={flag === 0 ? 'orange' : flag === 1 ? 'blue' : 'green'}>
+        {flag === 0 ? '待同步' : flag === 1 ? '同步中' : '同步成功'}
+      </Tag>
+    ),
+  },
+  {
+    title: '运行状态',
+    dataIndex: 'runStatus',
+    key: 'runStatus',
+    render: (status: number) => (
+      <Tag color={status === 0 ? 'orange' : status === 1 ? 'blue' : 'green'}>
+        {status === 0 ? '未运行' : status === 1 ? '正在运行' : '暂停'}
+      </Tag>
+    ),
+  },
+  {
+    title: '运行总时长',
+    key: 'runTotalTimes',
+    dataIndex: 'runTotalTimes',
+    render: (times: number) => <Typography.Text>{times}秒</Typography.Text>,
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: () => (
+      <Space size="middle">
+        <a>查看</a>
+        <a>删除</a>
+      </Space>
+    ),
+  },
+];
+
 
 export interface CreateMissionModalProps {
   open: boolean;
@@ -29,7 +78,9 @@ export const CreateMissionModal = ({
   const {
     data: programListByGatewayId,
     loading: requestProgramListByGatewayIdLoading,
+    run: runRequestProgramListByGatewayId,
   } = useRequest(requestProgramListByGatewayId, {
+    manual: true,
     onError: (error) => {
       message.error(error.message);
     },
@@ -40,7 +91,9 @@ export const CreateMissionModal = ({
   };
 
   const handleGatewayListClick = (id: number) => {
+    // 更新列表选中状态
     setSelectedGatewayId(id);
+    runRequestProgramListByGatewayId(id);
   };
 
   return (
@@ -84,9 +137,10 @@ export const CreateMissionModal = ({
           />
         </Flex>
         <div className={styles.rightWrapper}>
-          <Table
+          <Table<RequestProgramListByGatewayIdData>
             loading={requestProgramListByGatewayIdLoading}
             dataSource={programListByGatewayId?.list}
+            columns={columns}
           />
         </div>
       </Flex>
