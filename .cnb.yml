@@ -5,7 +5,7 @@
 # 开发分支构建配置（完整构建和推送）
 develop:
   push:
-    - name: test-agrox-country-front-web-ipad
+    - name: agrox-country-front-web-ipad
       # 构建环境配置
       docker:
         image: node:20-alpine
