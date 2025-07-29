@@ -109,3 +109,26 @@ export const cardStyle = createStyles(({ css }, props: { color: string; extraCol
     `,
   };
 });
+
+export const createMissionModalStyle = createStyles(({ css }) => {
+  return {
+    modalBody: css`
+      height: 540px;
+      display: flex;
+      gap: 30px;
+    `,
+    leftWrapper: css`
+      width: 360px;
+    `,
+    fieldPreviewImg: css`
+      width: 100%;
+      object-fit: contain;
+    `,
+    aiResultBoxContainer: css`
+      flex: 1;
+    `,
+    aiResultRow: css`
+      flex: 1;
+    `,
+  };
+});
