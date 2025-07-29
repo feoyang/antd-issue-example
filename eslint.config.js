@@ -13,6 +13,8 @@ import stylistic from '@stylistic/eslint-plugin'
 const compat = new FlatCompat();
 
 const ignoreWords = [
+    "Zonename",
+    "Checkbox",
     "Isonline",
     "Gatewaysn",
     "Gatewayname",

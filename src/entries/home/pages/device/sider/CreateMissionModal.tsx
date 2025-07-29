@@ -48,8 +48,8 @@ const columns: TableProps<RequestProgramListByGatewayIdData>['columns'] = [
     key: 'action',
     render: () => (
       <Space size="middle">
-        <a>查看</a>
-        <a>删除</a>
+        <Button type="link">编辑</Button>
+        <Button type="link" danger>删除</Button>
       </Space>
     ),
   },
@@ -100,6 +100,10 @@ export const CreateMissionModal = ({
   };
 
   const handleCreateMission = () => {
+    if (!selectedGatewayId) {
+      message.warning('请先选择网关');
+      return;
+    }
     setCreateProgramModalOpen(true);
   };
 
@@ -156,7 +160,11 @@ export const CreateMissionModal = ({
           />
         </Flex>
       </Flex>
-      <CreateProgramModal open={createProgramModalOpen} onCancel={() => setCreateProgramModalOpen(false)} />
+      <CreateProgramModal
+        open={createProgramModalOpen}
+        onCancel={() => setCreateProgramModalOpen(false)}
+        gatewayId={selectedGatewayId ?? 0}
+      />
     </Modal>
   );
 };

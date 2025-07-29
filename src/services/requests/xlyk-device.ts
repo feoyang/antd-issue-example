@@ -36,66 +36,6 @@ export const requestXLYKGatewayMeteorologySensorData = async () => {
   return transformXLYKResponse<XLYKGatewayDeviceSensorDataRes>(res);
 };
 
-/**
- * {
-                "Enable": 0,
-                "Powertype": 0,
-                "Batterylevel": 0,
-                "Powervoltage": 0.0,
-                "Signallevel": 0,
-                "SignalLevelPer": 0,
-                "Isonline": 0,
-                "Autoormanual": 1,
-                "Status": 0,
-                "Waterstatus": 0,
-                "Mtbf": 0,
-                "Batterystatus": 0,
-                "Calendardayoff": null,
-                "Nowaterwindows": null,
-                "gatewayflagNoWater": 0,
-                "gatewayflagNoWindow": 0,
-                "gatewayadmingroupid": 0,
-                "Totalonlinetimelen": 0,
-                "Firmwaretype": null,
-                "Firmwareversion": null,
-                "Swtype": null,
-                "Creatorid": 1001242,
-                "CreatorName": null,
-                "UserRight": 1,
-                "LastOfflineTime": "0001-01-01T00:00:00Z",
-                "SilencePeriodDate": "2025-12-06T02:01:57Z",
-                "TrafficDate": "2026-07-29T13:27:52Z",
-                "Createtime": "2024-11-29T07:29:10Z",
-                "Servicestatus": 2,
-                "Productiondate": "2025-06-06T02:01:57Z",
-                "Activationdate": "2025-07-29T13:27:52Z",
-                "Servicedeadline": "2026-07-29T13:27:52Z",
-                "TrafficGrace": "2026-08-28T13:27:52Z",
-                "TrafficcCancellation": "2026-11-29T13:27:52Z",
-                "Iot_Config": null,
-                "JsonConfig": null,
-                "ReturnLiquid": 0.0,
-                "EnterLiquid": 0.0,
-                "PowerMode": 0,
-                "SyncFlag": 0,
-                "Datareportingtime": 0,
-                "Elevation": 0.0,
-                "EnableVirtualDevice": 0,
-                "MstscConfig": null,
-                "RecoveryModeConfig": null,
-                "ValveMaxRuntimes": null,
-                "IsStationDC": 0,
-                "Gatewayid": 9626,
-                "Gatewaysn": "R24112907290978",
-                "Gatewayname": "EC-90978",
-                "Description": "",
-                "Gatewaytype": 101,
-                "Gatewaymodel": 10104,
-                "Longitude": 0.0,
-                "Latitude": 0.0,
-                "Hwdeviceid": "RCMS@1d0a2f446a7d2464162983a129471f26"
-            },
- */
 export interface RequestGatewayListByPageData {
   Enable: number;
   Powertype: number;
@@ -204,4 +144,105 @@ export const requestProgramListByGatewayId = async (gatewayId: number) => {
     transformXLYKResponse<XLYKListData<RequestGatewayListByPageData[]>>(res),
     (item) => item,
   );
+};
+export interface RequestIrrigationAreasByGatwayIdData {
+  Enable: number;
+  Gatewayid: number;
+  Zoneindex: number;
+  Zonename: string;
+  Description: string;
+  Planindex: number;
+  Totalvalvenum: number;
+  Valvelist: string;
+  Switchstatus: number;
+  Status: number;
+  Flowrate: number;
+  Flowmanagerenable: number;
+  Flowwatchenable: number;
+  Overflowalarm: number;
+  Underflowalarm: number;
+  Flowsensorassignment: number;
+  Pmvassignment: string;
+  Alarmdelay: number;
+  Alarmcleardelay: number;
+  Wateringbudget: number;
+  Landarea: number;
+  Waterdepth: number;
+  TimingEnable: number;
+  TimingStartTime: string;
+  runTime: number;
+  Id: number;
+}
+
+export const requestIrrigationAreasByGatewayId = async (gatewayId: number) => {
+  const query = qs.stringify({
+    gatewayId: gatewayId,
+  });
+
+  const res = await request.get(`/xlyk/gateway/api/v2/Zone/GetZoneListByGatewayId?${query}`);
+  return transformXLYKResponse<RequestIrrigationAreasByGatwayIdData[]>(res);
+};
+
+export interface RequestProgramDeviceParmas {
+  deviceId: number;
+  programId: number;
+  formulaId: number;
+  timeRun: number;
+  timeBeforeFertilization: number;
+  timeAfterFertilization: number;
+  createTime: string;
+}
+
+export interface RequestProgramZoneParmas {
+  zoneId: number;
+  programId: number;
+  formulaId: number;
+  timeRun: number;
+  timeBeforeFertilization: number;
+  timeAfterFertilization: number;
+  createTime: string;
+}
+
+export interface RequestAddProgramParams {
+  gatewayId: number;
+  programName: string;
+  description: string;
+  status: number;
+  totalMode: number;
+  totalNumber: number;
+  timeRunModel: number;
+  timeRun: number;
+  timeRunAll: number;
+  waterMode: number;
+  waterTotal: number;
+  rotationFlowTime: number;
+  rotationFlowNumber: number;
+  sersonalAdjustEnable: number;
+  sersonalAdjust: number;
+  sersonalClikMode: number;
+  sersonalActionType: number;
+  noWaterTimeStatus: number;
+  stackOrOverlap: number;
+  runStatus: number;
+  createTime: string;
+  updateTime: string;
+  configData: string;
+  configDataType: string;
+  syncFlag: number;
+  syncUpdateTime: string;
+  programIndex: number;
+  runTotalTimes: number;
+  programDevices: RequestProgramDeviceParmas[];
+  programZones: RequestProgramZoneParmas[];
+  runStartTime: string;
+  sensorId: number;
+  uuid: string;
+  programCode: string;
+}
+
+export const requestAddProgram = async (params: RequestAddProgramParams) => {
+  const body = params;
+
+  const res = await request.post('/xlyk/gateway/api/v2/Program/ProgramAdd', body);
+  return transformXLYKResponse<void>(res);
 };

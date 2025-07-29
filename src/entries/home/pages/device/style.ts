@@ -151,6 +151,8 @@ export const createMissionModalStyle = createStyles(({ css }) => {
 export const createProgramModalStyle = createStyles(({ css }) => {
   return {
     modalBody: css`
+      overflow-y: auto;
+      overflow-x: hidden;
       height: 360px;
       padding-top: 20px !important;
     `,
