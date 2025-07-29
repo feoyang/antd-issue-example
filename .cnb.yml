@@ -80,14 +80,14 @@ develop:
               image: docker:latest
               script:
                 - echo "=== 构建 Docker 镜像 ==="
-                - docker build -t ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}/test-agrox-country-front-web-ipad:latest .
+                - docker build -t ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest .
                 - echo "镜像构建完成"
 
             - name: push-docker-image
               image: docker:latest
               script:
                 - echo "=== 推送 Docker 镜像到制品库 ==="
-                - docker push ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}/test-agrox-country-front-web-ipad:latest
+                - docker push ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest
                 - echo "镜像推送完成"
       
       # 失败时执行的阶段

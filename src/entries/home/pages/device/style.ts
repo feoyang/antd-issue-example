@@ -147,3 +147,12 @@ export const createMissionModalStyle = createStyles(({ css }) => {
     `,
   };
 });
+
+export const createProgramModalStyle = createStyles(({ css }) => {
+  return {
+    modalBody: css`
+      height: 360px;
+      padding-top: 20px !important;
+    `,
+  };
+});

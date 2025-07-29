@@ -1,13 +1,15 @@
-import { Flex, Typography, Modal, List, message, Input, Table, TableProps, Space, Tag } from 'antd';
+import { Flex, Typography, Modal, List, message, Input, Table, TableProps, Space, Tag, Button } from 'antd';
 import { useRequest } from 'ahooks';
 import classNames from 'classnames';
 import { useState } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
 import { createMissionModalStyle } from '../style';
 import {
   requestGatewayListByPage,
   requestProgramListByGatewayId,
   RequestProgramListByGatewayIdData,
 } from '../../../../../services/requests/xlyk-device';
+import { CreateProgramModal } from './CreateProgramModal';
 
 const columns: TableProps<RequestProgramListByGatewayIdData>['columns'] = [
   {
@@ -65,6 +67,7 @@ export const CreateMissionModal = ({
 }: CreateMissionModalProps) => {
   const { styles } = createMissionModalStyle();
   const [selectedGatewayId, setSelectedGatewayId] = useState<number | undefined>(undefined);
+  const [createProgramModalOpen, setCreateProgramModalOpen] = useState<boolean>(false);
 
   const {
     data: gatewayListByPage,
@@ -94,6 +97,10 @@ export const CreateMissionModal = ({
     // 更新列表选中状态
     setSelectedGatewayId(id);
     runRequestProgramListByGatewayId(id);
+  };
+
+  const handleCreateMission = () => {
+    setCreateProgramModalOpen(true);
   };
 
   return (
@@ -136,14 +143,20 @@ export const CreateMissionModal = ({
             )}
           />
         </Flex>
-        <div className={styles.rightWrapper}>
+        <Flex className={styles.rightWrapper} vertical gap="small">
+          <div>
+            <Button type="primary" onClick={handleCreateMission} icon={<PlusOutlined />}>
+              创建任务
+            </Button>
+          </div>
           <Table<RequestProgramListByGatewayIdData>
             loading={requestProgramListByGatewayIdLoading}
             dataSource={programListByGatewayId?.list}
             columns={columns}
           />
-        </div>
+        </Flex>
       </Flex>
+      <CreateProgramModal open={createProgramModalOpen} onCancel={() => setCreateProgramModalOpen(false)} />
     </Modal>
   );
 };
