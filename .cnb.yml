@@ -27,14 +27,7 @@ develop:
         NODE_ENV: production
         # pnpm配置
         PNPM_HOME: /usr/local/bin
-        # Docker镜像标签
-        IMAGE_TAG: ${CNB_COMMIT_SHA_SHORT}
-        IMAGE_NAME: agrox-contryside-front
-        # 制品库配置 (需要在CNB平台配置这些环境变量)
-        DOCKER_REGISTRY: docker.cnb.cool
-        DOCKER_USERNAME: $CNB_TOKEN_USER_NAME
-        DOCKER_PASSWORD: $CNB_TOKEN
-      
+
       # 构建阶段
       stages:
         # 第一阶段：环境准备和依赖安装
@@ -54,7 +47,7 @@ develop:
                 - echo "=== 安装项目依赖 ==="
                 - pnpm install --frozen-lockfile
                 - echo "依赖安装完成"
-        
+
         # 第二阶段：代码检查和构建
         - name: build-and-test
           jobs:
@@ -81,21 +74,15 @@ develop:
               image: docker:latest
               script:
                 - echo "=== 构建 Docker 镜像 ==="
-                - docker --version
-                - echo "构建镜像: $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
                 - docker build -t ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest .
-                - docker push ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest
                 - echo "镜像构建完成"
 
             - name: push-docker-image
               image: docker:latest
               script:
                 - echo "=== 推送 Docker 镜像到制品库 ==="
-                - echo $DOCKER_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME --password-stdin
-                - docker push $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG
-                - docker push $DOCKER_REGISTRY/$IMAGE_NAME:latest
+                - docker push ${CNB_DOCKER_REGISTRY}/${CNB_REPO_SLUG_LOWERCASE}:latest
                 - echo "镜像推送完成"
-                - echo "镜像地址: $DOCKER_REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
       
       # 失败时执行的阶段
       failStages:
