@@ -114,18 +114,34 @@ export const createMissionModalStyle = createStyles(({ css }) => {
   return {
     modalBody: css`
       height: 540px;
-      display: flex;
-      gap: 30px;
+      padding-top: 20px !important;
     `,
     totalWrapper: css`
       width: 100%;
       height: 100%;
     `,
     leftWrapper: css`
-      width: 360px;
+      width: 240px;
       height: 100%;
+      padding-right: 20px;
+      margin-right: 20px;
       border-right: 1px solid #e8e8e8;
+
+      .gateway-item {
+        padding-left: 10px;
+        border-radius: 5px;
+
+        &:hover {
+          background-color: #e9e9e9;
+          cursor: pointer;
+        }
+
+        &.selected {
+          background-color: #f5f5f5;
+        }
+      }
     `,
+
     rightWrapper: css`
       flex: 1;
     `,

@@ -175,3 +175,33 @@ export const requestGatewayListByPage = async () => {
     (item) => item,
   );
 };
+
+export interface RequestProgramListByGatewayIdData {
+  programName: string;
+  programId: number;
+  // 运行状态：0 未运行，1 正在运行，2 暂停
+  runStatus: number;
+  // 运行总时长，单位秒；流量模式下会计算一个预估时间
+  runTotalTimes: number;
+  // 运行开始的UTC时间
+  runStartTime: string;
+  // 同步标识：0 待同步，1 正在同步，9 同步成功
+  syncFlag: number;
+  // 传感器编号
+  sensorId: number;
+}
+
+/**
+ * 获取网管下程序列表
+ */
+export const requestProgramListByGatewayId = async (gatewayId: number) => {
+  const query = qs.stringify({
+    gatewayId: gatewayId,
+  });
+
+  const res = await request.get(`/xlyk/gateway/api/v2/Program/GetProgramList?${query}`);
+  return transformXLYKList<RequestProgramListByGatewayIdData>(
+    transformXLYKResponse<XLYKListData<RequestGatewayListByPageData[]>>(res),
+    (item) => item,
+  );
+};
