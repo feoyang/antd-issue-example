@@ -1,7 +1,7 @@
 import { Layout } from 'antd';
 import { ReactNode } from 'react';
-import { content, layoutWrapper } from './style';
 import { Navigator } from './Navigator';
+import { layoutStyle } from './style';
 
 const { Content } = Layout;
 
@@ -10,10 +10,12 @@ export interface LayoutProps {
 }
 
 export const HomeLayout = ({ children }: LayoutProps) => {
+  const { styles } = layoutStyle();
+
   return (
-    <Layout className={layoutWrapper}>
+    <Layout className={styles.layoutWrapper}>
       <Navigator />
-      <Content className={content}>
+      <Content className={styles.content}>
         {children}
       </Content>
     </Layout>

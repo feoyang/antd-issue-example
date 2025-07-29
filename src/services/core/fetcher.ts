@@ -1,7 +1,8 @@
-import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { clearToken, getToken, setToken } from '../../authorization/token';
+import { AxiosError } from 'axios';
+import { clearToken, setToken } from '../../authorization/token';
 import type { IHttpInstance, RequestInterceptor, ResponseInterceptor } from './tools';
 import { baseHttpFactory } from './tools';
+import { AuthManager } from './request-manager';
 
 export type RequestOnFulfilled = RequestInterceptor[0];
 export type RequestOnRejected = RequestInterceptor[1];
@@ -10,18 +11,10 @@ export type ResponseOnRejected = ResponseInterceptor[1];
 
 
 const httpRequestInterceptorFactory = () => {
+  const authManager = new AuthManager();
+
   const onFulfilled: RequestOnFulfilled = (config) => {
-    const { headers, url } = config;
-
-    const token = getToken();
-
-    return {
-      ...config,
-      headers: {
-        ...headers,
-        ...token && url?.includes('/api/v1') && { 'Authorization': token },
-      },
-    } as InternalAxiosRequestConfig;
+    return authManager.applyAuth(config);
   };
 
   return [onFulfilled] as RequestInterceptor;
@@ -35,12 +28,22 @@ const httpResponseInterceptorFactory = () => {
     return res;
   };
 
-  const onRejected: ResponseOnRejected = (res: AxiosError) => {
-    if (res.response?.status === 401) {
-      clearToken();
-      location.href = '/account/login';
+  const onRejected: ResponseOnRejected = (error: AxiosError) => {
+    // 401未授权错误处理
+    if (error.response?.status === 401) {
+      const requestUrl = error.config?.url || '';
+      // 检查是否是需要登录的API
+      if (requestUrl.includes('/api/v1') || requestUrl.includes('agrox.horai.cn')) {
+        clearToken();
+        // 避免在已经在登录页面时重复跳转
+        if (!location.pathname.includes('/account/login')) {
+          location.href = '/account/login';
+        }
+      }
     }
-    return Promise.resolve(res.response);
+
+    // 对于所有错误，继续抛出以便上层处理
+    return Promise.reject(error);
   };
 
   return [onFulfilled, onRejected] as ResponseInterceptor;

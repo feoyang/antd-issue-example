@@ -1,4 +1,6 @@
-import { Button, ConfigProvider, Flex } from 'antd';
+import { Button, ConfigProvider, Flex, Typography } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router';
 import { BoxContainer } from '../../components/BoxContainer';
 import irrigationReport from '../../assets/overview-irrigationReport.png';
 import plantReport from '../../assets/overview-plantReport.png';
@@ -7,7 +9,7 @@ import { overviewStyle } from './style';
 
 export const reportItem = [
   {
-    id: 'irrigationReport',
+    id: 'irrigation',
     title: '灌溉建议',
     img: irrigationReport,
     link: '...',
@@ -16,7 +18,7 @@ export const reportItem = [
     background2: 'rgba(82, 196, 192, 0.02)',
   },
   {
-    id: 'plantReport',
+    id: 'plant',
     title: '植保报告',
     img: plantReport,
     link: '...',
@@ -27,7 +29,7 @@ export const reportItem = [
     background2: 'rgba(82, 196, 115, 0.02)',
   },
   {
-    id: 'soilReport',
+    id: 'field',
     title: '寻田报告',
     img: soilReport,
     link: '...',
@@ -38,8 +40,13 @@ export const reportItem = [
   },
 ];
 
-export const Report = () => {
+export const ReportEntry = () => {
   const { styles } = overviewStyle();
+  const navigate = useNavigate();
+
+  const handleButtonClick = (target: string) => {
+    navigate(`/report/${target}`);
+  };
 
   return (
     <BoxContainer title="报告类型" className={styles.reportContainer}>
@@ -54,8 +61,8 @@ export const Report = () => {
                 align="center"
                 style={{ background: `linear-gradient(98deg, ${item.background1} -4%, ${item.background2} 97%)` }}
               >
-                <Flex vertical gap="small">
-                  <div className="title">{item.title}</div>
+                <Flex vertical justify="space-between" style={{ height: '100%' }}>
+                  <Typography.Title level={4} style={{ margin: 0 }}>{item.title}</Typography.Title>
                   <ConfigProvider
                     theme={{
                       token: {
@@ -63,7 +70,14 @@ export const Report = () => {
                       },
                     }}
                   >
-                    <Button type="primary" shape="round">查看详情</Button>
+                    <Button
+                      type="primary"
+                      shape="round"
+                      icon={<SearchOutlined />}
+                      onClick={() => handleButtonClick(item.id)}
+                    >
+                      查看
+                    </Button>
                   </ConfigProvider>
                 </Flex>
                 <img src={item.img} alt={item.title} className="img" />

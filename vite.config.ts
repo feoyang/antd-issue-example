@@ -32,6 +32,13 @@ export default defineConfig(({ mode }) => {
           secure: false,
           bypass: byPass.bind(null, mode),
         },
+        '/xlyk': {
+          target: 'https://api.satlic.net:8020',
+          changeOrigin: true,
+          secure: false,
+          bypass: byPass.bind(null, mode),
+          rewrite: (path) => path.replace(/^\/xlyk/, ''),
+        },
         '/img': {
           target: `${env.VITE_BASE_BUCKET}/`,
           changeOrigin: true,

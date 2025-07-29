@@ -1,5 +1,3 @@
-import { Forecast, Live } from '../../data/common/gaode-weather';
-
 export interface IParams {
   [key: string]: any;
 }
@@ -35,6 +33,34 @@ export interface IListData<T> {
   list: T[];
 }
 
+export interface XLYKListData<T> {
+
+  /**
+   * 当前页面
+   */
+  PageIndex: number;
+
+  /**
+   * 总页数
+   */
+  PageCount: number;
+
+  /**
+   * 总数
+   */
+  RowCount: number;
+
+  /**
+   * 单页数据量
+   */
+  PageSize: number;
+
+  /**
+   * 数据列表
+   */
+  Data: T[];
+}
+
 export interface IListRequestQuery {
   pageSize: number;
   current: number;
@@ -63,27 +89,26 @@ export interface IResponse<T> {
   data: T;
 }
 
-export interface GaoDeWeatherResponse {
+export interface XLYKResponse<T> {
 
-  /*
-   状态码，值为0或1
-   1：成功；0：失败
-  */
-  status: string;
-
-  /*
-    返回结果总数目
+  /**
+   * 是否成功
    */
-  count: string;
+  Success: boolean;
 
-  info: string;
-
-  /*
-    返回状态说明,10000代表正确
+  /**
+   * 对应业务状态码
    */
-  infocode: string;
+  MessageId: number;
 
-  lives?: Live[];
+  /**
+   * message 直接提示给用户
+   */
+  Message: string;
+  MessageDetail: string;
 
-  forecasts?: Forecast[];
+  /**
+   * 响应体
+   */
+  Data: T;
 }

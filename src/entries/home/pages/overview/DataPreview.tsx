@@ -46,7 +46,7 @@ export const DataPreview = () => {
                     <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
                   </Flex>
                   <Flex align="flex-end" gap="small">
-                    <Typography.Title level={3} style={{ margin: 0 }}>{item.value}</Typography.Title>
+                    <Typography.Title level={3} className="value">{item.value}</Typography.Title>
                     <Typography.Text type="secondary">{item.unit}</Typography.Text>
                   </Flex>
                 </Flex>

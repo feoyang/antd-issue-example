@@ -6,10 +6,12 @@ export interface BoxContainerProps {
   extra?: string | ReactNode;
   children: ReactNode;
   className?: string;
+  size?: 'small' | 'middle';
 }
 
 export const BoxContainer = ({
   title,
+  size = 'middle',
   extra,
   children,
   className,
@@ -17,7 +19,7 @@ export const BoxContainer = ({
   return (
     <Flex className={className} vertical gap="small">
       <Flex justify="space-between" align="center">
-        <Typography.Title level={4} style={{ margin: 0 }}>
+        <Typography.Title level={size === 'small' ? 5 : 4} style={{ margin: 0 }}>
           {title}
         </Typography.Title>
         {extra}

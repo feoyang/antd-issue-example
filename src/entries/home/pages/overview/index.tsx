@@ -1,6 +1,7 @@
 import { LeftWrapper, RightWrapper } from '../../layout/style';
 import { DataPreview } from './DataPreview';
-import { Report } from './Report';
+import { IrrigationCalendar } from './IrrigationCalendar';
+import { ReportEntry } from './ReportEntry';
 import { Sider } from './sider';
 
 export const Overview = () => {
@@ -9,7 +10,8 @@ export const Overview = () => {
     <>
       <LeftWrapper>
         <DataPreview />
-        <Report />
+        <ReportEntry />
+        <IrrigationCalendar />
       </LeftWrapper>
       <RightWrapper>
         <Sider />

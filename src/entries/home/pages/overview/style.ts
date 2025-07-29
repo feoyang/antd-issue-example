@@ -32,6 +32,11 @@ export const overviewStyle = createStyles(({ css }) => {
               height: 38px;
             }
           }
+
+          .value {
+            font-family: DingTalk-JinBuTi;
+            margin: 0 !important;
+          }
         }
       }
     `,
@@ -40,17 +45,12 @@ export const overviewStyle = createStyles(({ css }) => {
       width: 100%;
 
       .reportItemsWrapper {
-        flex: 1;
+        height: 100px;
 
         .reportItem {
           flex: 1;
-          padding: 0px 22px ;
+          padding: 15px 25px ;
           border-radius: 15px;
-
-          .title {
-            font-size: 22px;
-            font-weight: 700;
-          }
 
           .img {
             width: 76px;
@@ -59,7 +59,9 @@ export const overviewStyle = createStyles(({ css }) => {
       }
     `,
 
-
+    irrigationCalendarContainer: css`
+      flex: 1;
+    `,
   };
 });
 
@@ -96,10 +98,20 @@ export const overviewSiderStyle = createStyles(({ css }) => {
         padding: 18px 22px 10px;
         z-index: 3;
 
-        .data {
+        .dataWrapper {
           height: 62px;
           border-radius: 10px;
           background-color: rgba(255, 255, 255, 0.7);
+
+          .value {
+            font-family: DingTalk-JinBuTi;
+            margin: 0 !important;
+            color: #40784B;
+          }
+
+          .valueLabel {
+            font-size: 10px;
+          }
         }
       }
     `,
@@ -119,14 +131,12 @@ export const overviewSiderStyle = createStyles(({ css }) => {
 
       .title {
         color: #FF7D53;
-        font-size: 12px;
-        font-weight: 700;
+        margin: 0 !important;
       }
 
       .text {
         color: #FF7551;
-        font-size: 8px;
-        font-weight: 400;
+        font-size: 11px;
       }
     `,
 
@@ -138,6 +148,15 @@ export const overviewSiderStyle = createStyles(({ css }) => {
         height: 100%;
         min-height: 0;
       }
+    `,
+
+    deviceIcon: css`
+      height: 30px;
+    `,
+
+    deviceValue: css`
+      margin: 0 !important;
+      font-family: DingTalk-JinBuTi;
     `,
   };
 });

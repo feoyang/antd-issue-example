@@ -1,8 +1,26 @@
-import { Button, Card, Col, Dropdown, Flex, MenuProps, Row, Space, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Flex,
+  MenuProps,
+  message,
+  Pagination,
+  Row,
+  Space,
+  Spin,
+  Tag,
+  Typography,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { DownOutlined, PlusOutlined, ScanOutlined } from '@ant-design/icons';
+import { useRequest } from 'ahooks';
 import { LeftWrapper, RightWrapper } from '../../layout/style';
 import { BoxContainer } from '../../components/BoxContainer';
+import { requestGatewayListByPage } from '../../../../services/requests/xlyk-device';
+import waterFertilizerPng from '../../assets/device-water-fertilizer.png';
+import waterFertilizeIconPng from '../../assets/device-water-fertilizer-icon.png';
 import { Sider } from './sider';
 import { deviceStyle } from './style';
 
@@ -22,6 +40,13 @@ const items: MenuProps['items'] = [
 export const Device = () => {
   const { styles } = deviceStyle();
   const [project, setProject] = useState<string>('');
+
+  const { data: gatewayListByPage, loading: requestGatewayListByPageLoading } = useRequest(requestGatewayListByPage, {
+    onError: (error) => {
+      message.error(error.message);
+    },
+  });
+
 
   const handleMenuClick: MenuProps['onClick'] = (info) => {
     const selectedItem = items?.find(item => item?.key === info.key);
@@ -49,7 +74,7 @@ export const Device = () => {
         <Flex justify="space-between" align="center" className={styles.topContainer}>
           <Flex align="center">
             <Dropdown menu={menuProps} trigger={['click']}>
-              <Button>
+              <Button size="large" type="primary">
                 <Space>
                   项目
                   <DownOutlined />
@@ -59,28 +84,51 @@ export const Device = () => {
             <Text className="text-container">{project}</Text>
           </Flex>
           <Space>
-            <Button icon={<PlusOutlined />}>增加新设备</Button>
-            <Button icon={<ScanOutlined />} />
+            <Button icon={<PlusOutlined /> } type="primary" size="large">
+              增加新设备
+            </Button>
+            <Button icon={<ScanOutlined />} type="primary" size="large" />
           </Space>
         </Flex>
-        <BoxContainer title="我的设备">
-          <Row gutter={[16, 16]}>
-            <Col span={8}>
-              <Card hoverable>
-                <div>123</div>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card hoverable>
-                <div>123</div>
-              </Card>
-            </Col>
-            <Col span={8}>
-              <Card hoverable>
-                <div>123</div>
-              </Card>
-            </Col>
-          </Row>
+        <BoxContainer
+          title="我的设备"
+          className={styles.deviceContainer}
+        >
+          <Spin spinning={requestGatewayListByPageLoading}>
+            <Row gutter={[16, 16]}>
+              {
+                gatewayListByPage?.list?.map((item) => (
+                  <Col span={8} key={item.Gatewayid}>
+                    <Card hoverable size="small" className={styles.deviceCard}>
+                      <Flex align="center" gap="middle" className={styles.deviceWrapper}>
+                        <img src={waterFertilizerPng} alt="water-fertilizer" className={styles.deviceImg} />
+                        <Flex vertical justify="space-between" className={styles.deviceContentWrapper}>
+                          <Flex vertical>
+                            <Flex align="center" gap="small">
+                              <img src={waterFertilizeIconPng} alt="waterFertilizeIcon" className={styles.deviceIcon} />
+                              <Typography.Title level={5} style={{ margin: 0 }}>水肥一体机</Typography.Title>
+                            </Flex>
+                            <div>
+                              <Typography.Text type="secondary">网关：</Typography.Text>
+                              <Typography.Text>{item.Gatewayname}</Typography.Text>
+                            </div>
+                          </Flex>
+                          <div><Tag color={item.Isonline ? 'success' : 'red'}>{item.Isonline ? '在线' : '离线'}</Tag></div>
+                        </Flex>
+                      </Flex>
+                    </Card>
+                  </Col>
+                ))
+              }
+            </Row>
+          </Spin>
+          <div style={{ margin: 'auto' }}>
+            <Pagination
+              total={gatewayListByPage?.total}
+              pageSize={12}
+              current={1}
+            />
+          </div>
         </BoxContainer>
       </LeftWrapper>
       <RightWrapper>

@@ -9,14 +9,6 @@ export function useToken() {
   return useAtomValue(accountAtoms.token);
 }
 
-export function useSetXlykToken() {
-  return useSetAtom(accountAtoms.xlykToken);
-}
-
-export function useXlykToken() {
-  return useAtomValue(accountAtoms.xlykToken);
-}
-
 export function useSetUser() {
   return useSetAtom(accountAtoms.selfInfo);
 }

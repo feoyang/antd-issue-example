@@ -26,6 +26,7 @@ export type {
   AIParametersResponseData,
   AIUsage,
   AIStreamChunk,
+  XLYKSensorData,
 } from './entities';
 
 export {

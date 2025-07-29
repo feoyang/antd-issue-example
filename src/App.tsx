@@ -4,9 +4,11 @@ import zhCN from 'antd/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { px2remTransformer, StyleProvider } from '@ant-design/cssinjs';
-import { Home } from './entries/home';
 import { Bootstrap } from './boostrap';
+import { globalStyles } from './style';
+import { Home } from './entries/home/pages';
 import { Account } from './entries/account/pages';
+import { Report } from './entries/report/pages';
 
 dayjs.locale('zh-cn');
 
@@ -16,6 +18,7 @@ const px2rem = px2remTransformer({
 });
 
 export const App = () => {
+  const { styles } = globalStyles();
 
   return (
     <XProvider
@@ -30,6 +33,12 @@ export const App = () => {
           },
         },
       }}
+      button={{
+        className: styles.linearGradientButton,
+      }}
+      segmented={{
+        className: styles.linearGradientSegmented,
+      }}
     >
       <StyleProvider
         transformers={[px2rem]}
@@ -39,6 +48,7 @@ export const App = () => {
             <Routes>
               <Route path="/account/*" element={<Account />} />
               <Route path="/home/*" element={<Home />} />
+              <Route path="/report/*" element={<Report />} />
               <Route path="*" element={<Navigate to="/account" />} />
             </Routes>
           </Bootstrap>

@@ -13,6 +13,17 @@ import stylistic from '@stylistic/eslint-plugin'
 const compat = new FlatCompat();
 
 const ignoreWords = [
+    "Isonline",
+    "Gatewaysn",
+    "Gatewayname",
+    "Gatewayid",
+    "Sensorrealtimedata",
+    "et0",
+    "Devicename",
+    "Deviceid",
+    "Gat",
+    "Telphone",
+    "Iot",
     "Rect",
     "unobserve",
     "selectable",

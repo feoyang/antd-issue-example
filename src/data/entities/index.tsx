@@ -24,4 +24,8 @@ export type {
   User,
 } from './user';
 
+export type {
+  XLYKSensorData,
+} from './xkyk-device';
+
 export * from './work';

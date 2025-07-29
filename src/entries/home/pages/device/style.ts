@@ -11,9 +11,36 @@ export const deviceStyle = createStyles(({ token, css }) => {
         display: flex;
         align-items: center;
         min-width: 200px;
-        height: ${px2rem(token.controlHeight)};
-        border-radius: ${px2rem(token.borderRadius)};
+        height: ${px2rem(token.controlHeightLG)};
+        border-radius: ${px2rem(token.borderRadiusLG)};
       }
+    `,
+    deviceContainer: css`
+      height: 100%;
+
+      .ant-spin-nested-loading {
+        height: 100%;
+        .ant-spin-container {
+          height: 100%;
+        }
+      }
+    `,
+    deviceCard: css`
+      .ant-card-body {
+        height: 110px;
+      }
+    `,
+    deviceWrapper: css`
+      height: 100%;
+    `,
+    deviceImg: css`
+      width: 80px;
+    `,
+    deviceContentWrapper: css`
+      height: 100%;
+    `,
+    deviceIcon: css`
+      width: 15px;
     `,
   };
 });
@@ -49,6 +76,36 @@ export const deviceSiderStyle = createStyles(({ css }) => {
           object-fit: contain;
         }
       }
+    `,
+  };
+});
+
+export const cardStyle = createStyles(({ css }, props: { color: string; extraColor: string }) => {
+  return {
+    card: css`
+      .ant-card-head {
+        padding: 0px;
+        padding-left: 10px;
+        background: ${props.color};
+
+        .ant-card-head-wrapper {
+          flex: 1;
+          align-items: stretch;
+
+          .ant-card-head-title {
+            flex: 1;
+            height: 100% !important;
+          }
+        }
+
+      }
+    `,
+
+    headExtra: css`
+      width: 100px;
+      height: 25px;
+      border-radius: 0px 10px 0px 10px;
+      background: ${props.extraColor};
     `,
   };
 });

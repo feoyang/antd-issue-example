@@ -9,3 +9,13 @@ export const transformList = <T = any[]>(res: any, transform: (item: any) => T):
     list: arr.map((item: any) => transform(item)),
   };
 };
+
+export const transformXLYKList = <T = any[]>(res: any, transform: (item: any) => T): IListData<T> => {
+  const arr = Array.isArray(res?.Data) ? res?.Data : [];
+  return {
+    next: res?.PageIndex + 1 > res?.PageCount ? -1 : res?.PageIndex + 1,
+    prev: res?.PageIndex - 1 < 1 ? -1 : res?.PageIndex - 1,
+    total: res?.RowCount,
+    list: arr.map((item: any) => transform(item)),
+  };
+};

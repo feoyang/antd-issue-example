@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios';
-import { IResponse } from '../core/types';
+import { IResponse, XLYKResponse } from '../core/types';
 
 /**
  * 不包含success code message data的响应体
@@ -29,6 +29,21 @@ export const transformIResponse = <T = any> (axiosResponse: AxiosResponse<IRespo
     }
 
     throw new Error(res.message || err.message || 'Unknown Error');
+  } else {
+    throw new Error(`${axiosResponse.status}: ${axiosResponse.statusText}`);
+  }
+};
+
+export const transformXLYKResponse = <T = any> (axiosResponse: AxiosResponse<XLYKResponse<T>>): T => {
+  if (axiosResponse.status >= 200 && axiosResponse.status < 300) {
+    const res = axiosResponse.data;
+    const err = axiosResponse as unknown as Error;
+
+    if (res?.Success) {
+      return res?.Data || {} as any;
+    }
+
+    throw new Error(res.Message || err.message || 'Unknown Error');
   } else {
     throw new Error(`${axiosResponse.status}: ${axiosResponse.statusText}`);
   }

@@ -5,11 +5,12 @@ import deviceIcon from '../assets/segmented-device.png';
 import controlIcon from '../assets/segmented-control.png';
 import mineIcon from '../assets/segmented-mine.png';
 import overviewIcon from '../assets/segmented-overview.png';
-import { header } from './style';
+import { layoutStyle } from './style';
 
 const { Header } = Layout;
 
 export const Navigator = () => {
+  const { styles } = layoutStyle();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const user = useUser();
@@ -50,7 +51,7 @@ export const Navigator = () => {
   ];
 
   return (
-    <Header className={header}>
+    <Header className={styles.header}>
       <Flex align="center" gap="large" style={{ width: '100%' }}>
         <Flex vertical align="start">
           <Typography.Title level={4} style={{ margin: 0 }}>Hello，{user?.nickname}</Typography.Title>
