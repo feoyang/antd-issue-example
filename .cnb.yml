@@ -70,6 +70,12 @@ develop:
         # 第三阶段：Docker镜像构建和推送
         - name: docker-build-push
           jobs:
+            - name: docker-login
+              script:
+                - echo "=== 登录 Docker 制品库 ==="
+                - echo docker login docker.cnb.cool -u cnb -p aurchPuh8EA1372aOmzzGeGA3BD
+                - echo "登录完成"
+
             - name: build-docker-image
               image: docker:latest
               script:
