@@ -117,17 +117,16 @@ export const createMissionModalStyle = createStyles(({ css }) => {
       display: flex;
       gap: 30px;
     `,
+    totalWrapper: css`
+      width: 100%;
+      height: 100%;
+    `,
     leftWrapper: css`
       width: 360px;
+      height: 100%;
+      border-right: 1px solid #e8e8e8;
     `,
-    fieldPreviewImg: css`
-      width: 100%;
-      object-fit: contain;
-    `,
-    aiResultBoxContainer: css`
-      flex: 1;
-    `,
-    aiResultRow: css`
+    rightWrapper: css`
       flex: 1;
     `,
   };

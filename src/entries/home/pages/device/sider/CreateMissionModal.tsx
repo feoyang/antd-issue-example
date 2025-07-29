@@ -10,7 +10,7 @@ export const CreateMissionModal = ({
   open,
   onCancel,
 }: CreateMissionModalProps) => {
-  const { styles: modalStyles } = createMissionModalStyle();
+  const { styles } = createMissionModalStyle();
 
   return (
     <Modal
@@ -19,18 +19,22 @@ export const CreateMissionModal = ({
       centered
       width={1000}
       classNames={{
-        body: modalStyles.modalBody,
+        body: styles.modalBody,
       }}
       title="待办任务"
       footer={null}
     >
-      <Flex>
-
-      </Flex>
-      <Flex>
-        <Flex>
-          <Typography.Title level={4}>创建任务</Typography.Title>
-        </Flex>
+      <Flex className={styles.totalWrapper}>
+        <div className={styles.leftWrapper}>
+          <Flex>
+            <Typography.Title level={4}>创建任务</Typography.Title>
+          </Flex>
+        </div>
+        <div className={styles.rightWrapper}>
+          <Flex>
+            <Typography.Title level={4}>创建任务</Typography.Title>
+          </Flex>
+        </div>
       </Flex>
     </Modal>
   );
