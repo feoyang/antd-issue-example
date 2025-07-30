@@ -9,7 +9,7 @@ const dataPreviewItem = [
   {
     key: 'rain',
     title: '今日降雨量',
-    value: 5.8,
+    value: 0,
     unit: 'mm',
     img: evaporationPng,
   },

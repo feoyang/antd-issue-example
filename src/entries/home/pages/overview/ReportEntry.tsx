@@ -30,7 +30,7 @@ export const reportItem = [
   },
   {
     id: 'field',
-    title: '寻田报告',
+    title: '巡田报告',
     img: soilReport,
     link: '...',
     className: 'soilReport',

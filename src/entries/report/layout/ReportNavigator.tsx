@@ -6,7 +6,7 @@ import { layoutStyle } from './style';
 const { Header } = Layout;
 
 const navigatorOptions: Record<string, string> = {
-  field: '寻田报告',
+  field: '巡田报告',
   irrigation: '灌溉报告',
 };
 
