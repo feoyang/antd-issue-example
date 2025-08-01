@@ -21,27 +21,27 @@ export const App = () => {
   const { styles } = globalStyles();
 
   return (
-    <XProvider
-      locale={zhCN}
-      theme={{
-        token: {
-          colorPrimary: '#57b086',
-        },
-        components: {
-          Layout: {
-            headerBg: '#fff',
-          },
-        },
-      }}
-      button={{
-        className: styles.linearGradientButton,
-      }}
-      segmented={{
-        className: styles.linearGradientSegmented,
-      }}
+    <StyleProvider
+      transformers={[px2rem]}
     >
-      <StyleProvider
-        transformers={[px2rem]}
+      <XProvider
+        locale={zhCN}
+        theme={{
+          token: {
+            colorPrimary: '#57b086',
+          },
+          components: {
+            Layout: {
+              headerBg: '#fff',
+            },
+          },
+        }}
+        button={{
+          className: styles.linearGradientButton,
+        }}
+        segmented={{
+          className: styles.linearGradientSegmented,
+        }}
       >
         <BrowserRouter>
           <Bootstrap>
@@ -53,7 +53,7 @@ export const App = () => {
             </Routes>
           </Bootstrap>
         </BrowserRouter>
-      </StyleProvider>
-    </XProvider>
+      </XProvider>
+    </StyleProvider>
   );
 };

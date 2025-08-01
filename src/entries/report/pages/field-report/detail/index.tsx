@@ -1,20 +1,22 @@
-import { Button, Card, Col, Flex, Modal, Row, Space, Typography } from 'antd';
+import { Button, Card, Col, Flex, Row, Space, Typography } from 'antd';
 import { DownloadOutlined, ShareAltOutlined } from '@ant-design/icons';
-import { modalStyle, aiResultColStyle, rightStyle } from '../style';
+import { detailContentStyle, aiResultColStyle, rightStyle } from '../style';
 import { items } from '..';
-import fieldDetailPng from '../../../assets/field-report-detail.png';
-import resultGrowthIcon from '../../../assets/field-report-result-icon-growth.png';
-import resultBuggerIcon from '../../../assets/field-report-result-icon-bugger.png';
-import resultWaterIcon from '../../../assets/field-report-result-icon-water.png';
-import analysisIconWrapperPng from '../../../assets/field-report-analysis-icon-wrapper.png';
-import analysisIconSoilPng from '../../../assets/field-report-analysis-icon-soil.png';
-import analysisIconPlantPng from '../../../assets/field-report-analysis-icon-plant.png';
-import analysisIconSunPng from '../../../assets/field-report-analysis-icon-sun.png';
-import suggestionIconManagePng from '../../../assets/field-report-suggestion-icon-manage.png';
-import suggestionIconWaterPng from '../../../assets/field-report-suggestion-icon-water.png';
-import suggestionIconMonitorPng from '../../../assets/field-report-suggestion-icon-monitor.png';
+import fieldDetailPng from '../../../assets/field-report/detail.png';
+import fieldDetailBackgroundPng from '../../../assets/field-report/detail-background.png';
+import resultGrowthIcon from '../../../assets/field-report/result-icon-growth.png';
+import resultBuggerIcon from '../../../assets/field-report/result-icon-bugger.png';
+import resultWaterIcon from '../../../assets/field-report/result-icon-water.png';
+import analysisIconWrapperPng from '../../../assets/field-report/analysis-icon-wrapper.png';
+import analysisIconSoilPng from '../../../assets/field-report/analysis-icon-soil.png';
+import analysisIconPlantPng from '../../../assets/field-report/analysis-icon-plant.png';
+import analysisIconSunPng from '../../../assets/field-report/analysis-icon-sun.png';
+import suggestionIconManagePng from '../../../assets/field-report/suggestion-icon-manage.png';
+import suggestionIconWaterPng from '../../../assets/field-report/suggestion-icon-water.png';
+import suggestionIconMonitorPng from '../../../assets/field-report/suggestion-icon-monitor.png';
 
-import { BoxContainer } from '../../../../home/components/BoxContainer';
+import { BoxContainer } from '../../../../../components/BoxContainer';
+import { SharedReportModal } from '../../../components/SharedReportModal';
 
 export const aiResult = [
   {
@@ -110,144 +112,134 @@ export const Detail = ({
   open,
   onClose,
 }: DetailProps) => {
-  const { styles: modalStyles } = modalStyle();
+  const { styles: detailContentStyles } = detailContentStyle();
 
   return (
-    <Modal
+    <SharedReportModal
       open={open}
-      onCancel={onClose}
-      title={
-        <Flex justify="center">
-          <Typography.Title level={4} style={{ margin: 0 }}>
-            {items.find(item => item.id === id)?.title}
-          </Typography.Title>
-        </Flex>
-      }
-      centered
-      width={1080}
-      classNames={{
-        header: modalStyles.modalHeader,
-        content: modalStyles.modalContent,
-        body: modalStyles.modalBody,
-      }}
-      footer={null}
+      onClose={onClose}
+      title={items.find(item => item.id === id)?.title || ''}
+      bodyHeight={540}
+      backgroundImg={fieldDetailBackgroundPng}
     >
-      <Flex className={modalStyles.leftWrapper}>
-        <Flex vertical gap="middle">
-          <Space direction="vertical">
-            <img src={fieldDetailPng} alt="field-preview" className={modalStyles.fieldPreviewImg} />
-            <div>
-              <Typography.Text type="secondary">拍摄时间：</Typography.Text>
-              <Typography.Text>{items.find(item => item.id === id)?.time}</Typography.Text>
-            </div>
-          </Space>
-          <BoxContainer title="AI诊断结果" className={modalStyles.aiResultBoxContainer}>
-            <Row className={modalStyles.aiResultRow} gutter={[12, 0]}>
-              {
-                aiResult.map((item, index) => {
-                  const { styles: aiResultColStyles } = aiResultColStyle({ color: item.color, index: index });
-                  return (
-                    <Col span={12} key={item.id} className={aiResultColStyles.aiResultCol}>
-                      <Card
-                        title={
-                          item.icon ?
-                            <Flex align="center" justify="center" className={aiResultColStyles.iconWrapper}>
-                              <img src={item.icon} alt={item.title} className={aiResultColStyles.icon} />
-                            </Flex>
-                            :
-                            <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
-                        }
-                        extra={
-                          <Flex justify="center" align="center" className={aiResultColStyles.degreeWrapper}>
-                            <Typography.Text>{item.degree}</Typography.Text>
-                          </Flex>
-                        }
-                        size="small"
-                        variant="borderless"
-                        className={aiResultColStyles.aiResultColCard}
-                      >
-                        <Flex vertical>
-                          {
-                            item.icon &&
-                             <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
+      <Flex gap="large" flex={1}>
+        <Flex className={detailContentStyles.leftWrapper}>
+          <Flex vertical gap="middle">
+            <Space direction="vertical">
+              <img src={fieldDetailPng} alt="field-preview" className={detailContentStyles.fieldPreviewImg} />
+              <div>
+                <Typography.Text type="secondary">拍摄时间：</Typography.Text>
+                <Typography.Text>{items.find(item => item.id === id)?.time}</Typography.Text>
+              </div>
+            </Space>
+            <BoxContainer title="AI诊断结果" className={detailContentStyles.aiResultBoxContainer}>
+              <Row className={detailContentStyles.aiResultRow} gutter={[12, 0]}>
+                {
+                  aiResult.map((item, index) => {
+                    const { styles: aiResultColStyles } = aiResultColStyle({ color: item.color, index: index });
+                    return (
+                      <Col span={12} key={item.id} className={aiResultColStyles.aiResultCol}>
+                        <Card
+                          title={
+                            item.icon ?
+                              <Flex align="center" justify="center" className={aiResultColStyles.iconWrapper}>
+                                <img src={item.icon} alt={item.title} className={aiResultColStyles.icon} />
+                              </Flex>
+                              :
+                              <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
                           }
+                          extra={
+                            <Flex justify="center" align="center" className={aiResultColStyles.degreeWrapper}>
+                              <Typography.Text>{item.degree}</Typography.Text>
+                            </Flex>
+                          }
+                          size="small"
+                          variant="borderless"
+                          className={aiResultColStyles.aiResultColCard}
+                        >
+                          <Flex vertical>
+                            {
+                              item.icon &&
+                             <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
+                            }
+                            <Typography.Text>{item.description}</Typography.Text>
+                          </Flex>
+                        </Card>
+                      </Col>
+                    );
+                  })
+                }
+              </Row>
+            </BoxContainer>
+          </Flex>
+        </Flex>
+        <Flex vertical justify="space-between" style={{ flex: 1 }}>
+          <Flex vertical gap="large">
+            <BoxContainer title="详细分析">
+              <Row gutter={[16, 0]}>
+                {
+                  analysis.map(item => {
+                    const { styles: rightStyles } = rightStyle(
+                      { background: item.background, analysisIconWrapperBackgroundImg: analysisIconWrapperPng },
+                    );
+                    return (
+                      <Col span={8} key={item.id} className={rightStyles.analysisCol}>
+                        <Card
+                          title={
+                            <Space>
+                              <Flex align="center" className={rightStyles.analysisIconWrapper}>
+                                <img src={item.icon} alt="analysis-icon" className={rightStyles.analysisIcon} />
+                              </Flex>
+                              <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
+                            </Space>
+                          }
+                          variant="borderless"
+                          className={rightStyles.analysisColCard}
+                        >
                           <Typography.Text>{item.description}</Typography.Text>
-                        </Flex>
-                      </Card>
-                    </Col>
-                  );
-                })
-              }
-            </Row>
-          </BoxContainer>
+                        </Card>
+                      </Col>
+                    );
+                  })
+                }
+              </Row>
+            </BoxContainer>
+            <BoxContainer title="管理建议">
+              <Row gutter={[16, 0]}>
+                {
+                  suggestions.map(item => {
+                    const { styles: rightStyles } = rightStyle({ background: item.background });
+                    return (
+                      <Col span={8} key={item.id} className={rightStyles.suggestionsCol}>
+                        <Card
+                          title={
+                            <Space>
+                              <Flex justify="center" align="center" className={rightStyles.suggestionIconWrapper}>
+                                <img src={item.icon} alt="suggestion-icon" className={rightStyles.suggestionIcon} />
+                              </Flex>
+                              <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
+                            </Space>
+                          }
+                          variant="borderless"
+                          className={rightStyles.suggestionsColCard}
+                        >
+                          <Typography.Text>{item.description}</Typography.Text>
+                        </Card>
+                      </Col>
+                    );
+                  })
+                }
+              </Row>
+            </BoxContainer>
+          </Flex>
+          <Flex justify="flex-end" style={{ width: '100%' }}>
+            <Space>
+              <Button icon={<ShareAltOutlined />} size="large">分享报告</Button>
+              <Button icon={<DownloadOutlined />} size="large">导出PDF</Button>
+            </Space>
+          </Flex>
         </Flex>
       </Flex>
-      <Flex vertical justify="space-between" style={{ flex: 1 }}>
-        <Flex vertical gap="large">
-          <BoxContainer title="详细分析">
-            <Row gutter={[16, 0]}>
-              {
-                analysis.map(item => {
-                  const { styles: rightStyles } = rightStyle(
-                    { background: item.background, analysisIconWrapperBackgroundImg: analysisIconWrapperPng },
-                  );
-                  return (
-                    <Col span={8} key={item.id} className={rightStyles.analysisCol}>
-                      <Card
-                        title={
-                          <Space>
-                            <Flex align="center" className={rightStyles.analysisIconWrapper}>
-                              <img src={item.icon} alt="analysis-icon" className={rightStyles.analysisIcon} />
-                            </Flex>
-                            <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
-                          </Space>
-                        }
-                        variant="borderless"
-                        className={rightStyles.analysisColCard}
-                      >
-                        <Typography.Text>{item.description}</Typography.Text>
-                      </Card>
-                    </Col>
-                  );
-                })
-              }
-            </Row>
-          </BoxContainer>
-          <BoxContainer title="管理建议">
-            <Row gutter={[16, 0]}>
-              {
-                suggestions.map(item => {
-                  const { styles: rightStyles } = rightStyle({ background: item.background });
-                  return (
-                    <Col span={8} key={item.id} className={rightStyles.suggestionsCol}>
-                      <Card
-                        title={
-                          <Space>
-                            <Flex justify="center" align="center" className={rightStyles.suggestionIconWrapper}>
-                              <img src={item.icon} alt="suggestion-icon" className={rightStyles.suggestionIcon} />
-                            </Flex>
-                            <Typography.Title level={5} style={{ margin: 0 }}>{item.title}</Typography.Title>
-                          </Space>
-                        }
-                        variant="borderless"
-                        className={rightStyles.suggestionsColCard}
-                      >
-                        <Typography.Text>{item.description}</Typography.Text>
-                      </Card>
-                    </Col>
-                  );
-                })
-              }
-            </Row>
-          </BoxContainer>
-        </Flex>
-        <Flex justify="flex-end" style={{ width: '100%' }}>
-          <Space>
-            <Button icon={<ShareAltOutlined />} size="large">分享报告</Button>
-            <Button icon={<DownloadOutlined />} size="large">导出PDF</Button>
-          </Space>
-        </Flex>
-      </Flex>
-    </Modal>
+    </SharedReportModal>
   );
 };

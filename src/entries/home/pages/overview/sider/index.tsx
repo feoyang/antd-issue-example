@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { Card, Col, Flex, message, Row, Spin, Typography } from 'antd';
 import { useRequest } from 'ahooks';
 import rightPng from '../../../assets/overview-right.png';
-import { BoxContainer } from '../../../components/BoxContainer';
+import { BoxContainer } from '../../../../../components/BoxContainer';
 import warningPng from '../../../assets/overview-warning.png';
 import et0Png from '../../../assets/overview-sider-et0.png';
 import humidityPng from '../../../assets/overview-sider-humidity.png';

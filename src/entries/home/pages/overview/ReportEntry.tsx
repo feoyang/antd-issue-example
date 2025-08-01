@@ -1,7 +1,7 @@
 import { Button, ConfigProvider, Flex, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
-import { BoxContainer } from '../../components/BoxContainer';
+import { BoxContainer } from '../../../../components/BoxContainer';
 import irrigationReport from '../../assets/overview-irrigationReport.png';
 import plantReport from '../../assets/overview-plantReport.png';
 import soilReport from '../../assets/overview-soilReport.png';

@@ -1,6 +1,7 @@
 import { createStyles } from 'antd-style';
+import suggestionBackgroundPng from '../../assets/irrigation-report/detail-suggestion-background.png';
 
-export const fieldCardStyle = createStyles(({ css }) => {
+export const irrigationCardStyle = createStyles(({ css }) => {
   return {
     previewImg: css`
       height: 100px;
@@ -21,18 +22,22 @@ export const fieldCardStyle = createStyles(({ css }) => {
 
 export const detailContentStyle = createStyles(({ css }) => {
   return {
-    leftWrapper: css`
-      width: 360px;
-    `,
-    fieldPreviewImg: css`
+    suggestionContainer: css`
       width: 100%;
-      object-fit: contain;
-    `,
-    aiResultBoxContainer: css`
-      flex: 1;
-    `,
-    aiResultRow: css`
-      flex: 1;
+      height: 120px;
+      background: url(${suggestionBackgroundPng}) no-repeat center center;
+      background-size: 100% 100%;
+      padding: 8px 16px;
+      box-sizing: border-box;
+
+      .content {
+        flex: 1;
+
+        .textArea {
+          flex: 1;
+          background: linear-gradient(91deg, #FFFFFF -5%, rgba(255, 255, 255, 0.8) 99%);
+        }
+      }
     `,
   };
 });
@@ -125,7 +130,7 @@ export const rightStyle = createStyles((
       width: 30px;
       height: 30px;
       background: url(${props.analysisIconWrapperBackgroundImg}) no-repeat center center;
-      background-size: contain;
+      background-size: contain; /* 或者使用具体数值如: 30px 30px */
     `,
     analysisIcon: css`
       margin-left: 5px;

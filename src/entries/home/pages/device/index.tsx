@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import { DownOutlined, PlusOutlined, ScanOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { LeftWrapper, RightWrapper } from '../../layout/style';
-import { BoxContainer } from '../../components/BoxContainer';
+import { BoxContainer } from '../../../../components/BoxContainer';
 import { requestGatewayListByPage } from '../../../../services/requests/xlyk-device';
 import waterFertilizerPng from '../../assets/device-water-fertilizer.png';
 import waterFertilizeIconPng from '../../assets/device-water-fertilizer-icon.png';

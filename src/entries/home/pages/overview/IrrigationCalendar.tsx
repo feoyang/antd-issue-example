@@ -3,7 +3,7 @@ import { Table, message } from 'antd';
 import { CheckOutlined, QuestionOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { BoxContainer } from '../../components/BoxContainer';
+import { BoxContainer } from '../../../../components/BoxContainer';
 import { overviewStyle } from './style';
 
 // 数据类型定义

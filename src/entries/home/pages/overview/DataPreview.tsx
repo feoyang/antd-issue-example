@@ -2,7 +2,7 @@ import { Flex, Typography } from 'antd';
 import advertisementPng from '../../assets/overview-advertisement.png';
 import evaporationPng from '../../assets/overview-evaporation.png';
 import rainPng from '../../assets/overview-rain.png';
-import { BoxContainer } from '../../components/BoxContainer';
+import { BoxContainer } from '../../../../components/BoxContainer';
 import { overviewStyle } from './style';
 
 const dataPreviewItem = [
