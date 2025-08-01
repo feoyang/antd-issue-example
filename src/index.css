@@ -1,15 +1,5 @@
-@font-face {
-  font-family: DingTalk-JinBuTi;
-  src: url('./assets/font/DingTalk-JinBuTi.woff2') format('woff2'),
-       url('./assets/font/DingTalk-JinBuTi.woff') format('woff'),
-       url('./assets/font/DingTalk-JinBuTi.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap; /* 优化字体加载性能 */
-}
-
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif, DingTalk-JinBuTi;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;

@@ -24,35 +24,6 @@ export default defineConfig(({ mode }) => {
     build: {
       emptyOutDir: true
     },
-    server: {
-      proxy: {
-        '/api': {
-          target: `${env.VITE_BASE_HOST}`,
-          changeOrigin: true,
-          secure: false,
-          bypass: byPass.bind(null, mode),
-        },
-        '/xlyk': {
-          target: 'https://api.satlic.net:8020',
-          changeOrigin: true,
-          secure: false,
-          bypass: byPass.bind(null, mode),
-          rewrite: (path) => path.replace(/^\/xlyk/, ''),
-        },
-        '/img': {
-          target: `${env.VITE_BASE_BUCKET}/`,
-          changeOrigin: true,
-          secure: false,
-          bypass: byPass.bind(null, mode),
-        },
-        '/file': {
-          target: `${env.VITE_BASE_FILE}/`,
-          changeOrigin: true,
-          secure: false,
-          bypass: byPass.bind(null, mode),
-        },
-      }
-    },
     css: {
       postcss: {
         plugins: [
